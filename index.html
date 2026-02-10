@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gênese do Equilíbrio | Diário Terapêutico</title>
+    <meta name="description" content="Plataforma de autoconhecimento e acolhimento emocional.">
+</head>
+<body>
+    <a href="#conteudo-principal" style="position: absolute; left: -10000px;">Pular para o conteúdo principal</a>
+
+    <header>
+        <h1>Gênese do Equilíbrio</h1>
+        <nav aria-label="Navegação principal">
+            <ul>
+                <li><a href="#diario">Diário</a></li>
+                <li><a href="#recomendacoes">Recomendações</a></li>
+                <li><a href="#historico">Meu Histórico</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="conteudo-principal">
+        <section id="diario">
+            <h2>Como foi o seu dia?</h2>
+            <form action="/analise-ia" method="POST">
+                <label for="relato-diario">Descreva seus sentimentos e reflexões:</label><br>
+                <textarea id="relato-diario" name="relato-diario" required placeholder="Sinta-se livre para desabafar..." rows="10" cols="50"></textarea>
+                
+                <br><br>
+                
+                <label for="pin-acesso">PIN de Segurança (4 dígitos):</label><br>
+                <input type="password" id="pin-acesso" name="pin-acesso" required minlength="4" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" title="O PIN deve conter exatamente 4 números.">
+                
+                <br><br>
+                <button type="submit">Finalizar Resumo e Analisar</button>
+            </form>
+        </section>
+
+        <hr>
+
+        <section id="recomendacoes">
+            <h2>Sugestões para seu Bem-Estar</h2>
+            <article>
+                <figure>
+                    
+                </figure>
+                <h3>O Homem em Busca de Sentido</h3>
+                <p><small>Tipo: <strong>Livro</strong></small></p>
+                <p>Uma obra sobre resiliência e a busca por propósito.</p>
+                <a href="#" aria-label="Ver detalhes do livro O Homem em Busca de Sentido">Ver detalhes</a>
+            </article>
+        </section>
+
+        <hr>
+
+        <section id="historico" tabindex="-1">
+            <h2>Meu Histórico de Evolução</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Sentimento</th>
+                        <th>Distorção Identificada</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10/02/2026</td>
+                        <td>Ansiedade</td>
+                        <td>Catastrofização</td>
+                        <td>Meditação</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <aside>
+        <button type="button">🆘 Preciso de Acolhimento Agora</button>
+    </aside>
+
+    <footer>
+        <p><strong>Aviso:</strong> Este sistema não substitui o atendimento profissional de psicólogos.</p>
+        <nav>
+            <a href="#">Privacidade</a> | <a href="#">Termos de Uso</a>
+        </nav>
+        <p><small>&copy; 2026 Gênese do Equilíbrio</small></p>
+    </footer>
+</body>
+</html>
