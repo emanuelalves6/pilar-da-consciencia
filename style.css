@@ -281,4 +281,9 @@ footer {
     nav ul { margin-top: 1rem; gap: 15px; }
     section { padding: 2rem; }
     h2 { font-size: 1.6rem; }
+/* Classe para esconder elementos */
+.hidden {
+    display: none !important;
+}
+
 }
