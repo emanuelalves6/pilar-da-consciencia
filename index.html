@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gênese do Equilíbrio | Diário Terapêutico</title>
-    <meta name="description" content="Plataforma de autoconhecimento e acolhimento emocional.">
-    <!-- Fonte Profissional -->
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <a href="#conteudo-principal" style="position: absolute; left: -10000px;">Pular para o conteúdo principal</a>
-
-    <!-- SEÇÃO DE LOGIN (Portal de Entrada) -->
+    
+    <!-- 1. TELA DE LOGIN (A única visível ao carregar) -->
     <section id="login" class="auth-wrapper">
         <div class="auth-card">
             <div class="auth-header">
@@ -40,61 +37,65 @@
         </div>
     </section>
 
-    <!-- CONTEÚDO PRINCIPAL (Exibido após login) -->
-    <header>
+    <!-- 2. HEADER (Escondido inicialmente com .hidden) -->
+    <header class="hidden">
         <div class="logo">Gênese do Equilíbrio</div>
         <nav aria-label="Navegação principal">
             <ul>
                 <li><a href="#diario">Diário</a></li>
                 <li><a href="#recomendacoes">Recomendações</a></li>
                 <li><a href="#historico">Meu Histórico</a></li>
-                <li><a href="#login" class="btn-logout">Sair</a></li>
+                <li><a href="#" class="btn-logout">Sair</a></li>
             </ul>
         </nav>
     </header>
 
-   <main id="conteudo-principal" class="hidden">
+    <!-- 3. CONTEÚDO PRINCIPAL (Escondido inicialmente com .hidden) -->
+    <main id="conteudo-principal" class="hidden">
 
+        <!-- Seção do Diário -->
         <section id="diario">
             <div class="section-header">
                 <h2>Como foi o seu dia?</h2>
                 <p>Transforme seus sentimentos em palavras.</p>
             </div>
             
-            <form action="/analise-ia" method="POST">
+            <form id="form-diario">
                 <label for="relato-diario">Descreva seus sentimentos e reflexões:</label>
                 <textarea id="relato-diario" name="relato-diario" required placeholder="Sinta-se livre para desabafar..." rows="10"></textarea>
                 
                 <div class="security-box">
-                    <label for="pin-acesso">Confirme seu PIN de Segurança (4 dígitos):</label>
-                    <input type="password" id="pin-acesso" name="pin-acesso" required minlength="4" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" title="O PIN deve conter exatamente 4 números.">
+                    <label for="pin-acesso">Confirme seu PIN de Segurança (Teste: 1234):</label>
+                    <input type="password" id="pin-acesso" name="pin-acesso" required minlength="4" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
                 </div>
                 
-                <button type="submit" class="btn-submit">Finalizar Resumo e Analisar com IA</button>
+                <button type="submit" class="btn-submit" style="width: 100%; background: var(--verde-acao); color: white; padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold;">
+                    Finalizar Resumo e Analisar com IA
+                </button>
             </form>
         </section>
 
+        <!-- Outras Seções (Recomendações e Histórico) -->
         <section id="recomendacoes">
             <h2>Sugestões para seu Bem-Estar</h2>
             <article class="card-sugestao">
                 <div class="card-content">
                     <h3>O Homem em Busca de Sentido</h3>
                     <p><span class="badge">Livro</span></p>
-                    <p>Uma obra poderosa sobre resiliência, logoterapia e a busca constante por propósito, mesmo em situações extremas.</p>
-                    <a href="#" class="btn-details" aria-label="Ver detalhes do livro O Homem em Busca de Sentido">Ver detalhes da obra</a>
+                    <p>Uma obra poderosa sobre resiliência e propósito.</p>
+                    <a href="#" class="btn-details">Ver detalhes da obra</a>
                 </div>
             </article>
         </section>
 
-        <section id="historico" tabindex="-1">
+        <section id="historico">
             <h2>Meu Histórico de Evolução</h2>
             <div class="table-container">
-                <table border="0">
+                <table>
                     <thead>
                         <tr>
                             <th>Data</th>
                             <th>Sentimento</th>
-                            <th>Distorção Identificada</th>
                             <th>Ação Tomada</th>
                         </tr>
                     </thead>
@@ -102,7 +103,6 @@
                         <tr>
                             <td>10/02/2026</td>
                             <td><span class="tag tag-ansiedade">Ansiedade</span></td>
-                            <td>Catastrofização</td>
                             <td>Meditação Guiada</td>
                         </tr>
                     </tbody>
@@ -111,22 +111,17 @@
         </section>
     </main>
 
+    <!-- Botão SOS (Também pode começar escondido se preferir) -->
     <aside>
         <button type="button" class="btn-sos">🆘 Preciso de Acolhimento Agora</button>
     </aside>
 
     <footer>
-        <div class="footer-content">
-            <p class="aviso"><strong>Aviso:</strong> Este sistema é uma ferramenta de apoio e não substitui o atendimento profissional de psicólogos ou psiquiatras.</p>
-            <nav class="footer-links">
-                <a href="#">Privacidade</a>
-                <a href="#">Termos de Uso</a>
-                <a href="#">Ajuda</a>
-            </nav>
-            <p class="copyright"><small>&copy; 2026 Gênese do Equilíbrio | Desenvolvido para o bem-estar mental.</small></p>
-        </div>
+        <p><small>&copy; 2026 Gênese do Equilíbrio</small></p>
     </footer>
+
+    <!-- LINK PARA O SEU JS (Certifique-se de que o nome do arquivo está correto) -->
+    <script src="script.js"></script>
 </body>
 </html>
-
 
