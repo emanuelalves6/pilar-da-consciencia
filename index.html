@@ -9,7 +9,7 @@
 </head>
 <body>
     
-    <!-- 1. TELA DE LOGIN (A única visível ao carregar) -->
+    <!-- 1. TELA DE LOGIN -->
     <section id="login" class="auth-wrapper">
         <div class="auth-card">
             <div class="auth-header">
@@ -32,34 +32,123 @@
             </form>
             
             <div class="auth-footer">
-                <a href="#">Esqueci minha senha</a> | <a href="#">Criar nova conta</a>
+                <a href="#" id="link-esqueci">Esqueci minha senha</a> | 
+                <a href="#" id="link-cadastro">Criar nova conta</a>
             </div>
         </div>
     </section>
 
-    <!-- 2. HEADER (Escondido inicialmente com .hidden) -->
-    <header class="hidden">
+    <!-- 2. TELA DE CADASTRO (Nova) -->
+    <section id="cadastro" class="auth-wrapper hidden">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Crie sua Conta</h2>
+                <p>Comece sua jornada de equilíbrio.</p>
+            </div>
+            
+            <form id="form-cadastro">
+                <div class="input-group-row">
+                    <div class="input-container">
+                        <label>Nome Completo</label>
+                        <input type="text" id="cad-nome" required>
+                    </div>
+                    <div class="input-container">
+                        <label>Usuário</label>
+                        <input type="text" id="cad-username" required>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label>E-mail</label>
+                    <input type="email" id="cad-email" required>
+                </div>
+
+                <div class="input-group-row">
+                    <div class="input-container">
+                        <label>Telefone</label>
+                        <input type="tel" id="cad-tel" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="input-container">
+                        <label>PIN (4 dígitos)</label>
+                        <input type="password" id="cad-pin" maxlength="4" pattern="[0-9]{4}" placeholder="1234" required>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label>Endereço</label>
+                    <input type="text" id="cad-endereco">
+                </div>
+
+                <div class="input-container">
+                    <label>Senha</label>
+                    <input type="password" id="cad-senha" required>
+                </div>
+
+                <button type="submit" class="btn-entrar">Finalizar Cadastro</button>
+            </form>
+            <div class="auth-footer">
+                <a href="#" class="voltar-login">Já tenho conta? Entrar</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. TELA ESQUECI A SENHA (Nova) -->
+    <section id="esqueci-senha" class="auth-wrapper hidden">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Recuperar Acesso</h2>
+                <p id="instrucao-recuperar">Digite seu e-mail para receber o link de alteração.</p>
+            </div>
+            
+            <!-- Passo 1: Enviar Email -->
+            <form id="form-esqueci-email">
+                <div class="input-container">
+                    <label>E-mail cadastrado</label>
+                    <input type="email" id="recuperar-email" required>
+                </div>
+                <button type="submit" class="btn-entrar">Enviar Link</button>
+            </form>
+
+            <!-- Passo 2: Nova Senha (Escondido via JS) -->
+            <form id="form-nova-senha" class="hidden">
+                <div class="input-container">
+                    <label>Código enviado</label>
+                    <input type="text" id="codigo-verificacao" placeholder="Ex: 123456" required>
+                </div>
+                <div class="input-container">
+                    <label>Nova Senha</label>
+                    <input type="password" id="nova-senha" required>
+                </div>
+                <button type="submit" class="btn-entrar">Alterar Senha</button>
+            </form>
+
+            <div class="auth-footer">
+                <a href="#" class="voltar-login">Voltar ao Login</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. HEADER (Escondido) -->
+    <header class="hidden" id="main-header">
         <div class="logo">Gênese do Equilíbrio</div>
         <nav aria-label="Navegação principal">
             <ul>
                 <li><a href="#diario">Diário</a></li>
                 <li><a href="#recomendacoes">Recomendações</a></li>
                 <li><a href="#historico">Meu Histórico</a></li>
-                <li><a href="#" class="btn-logout">Sair</a></li>
+                <li><a href="#" class="btn-logout" id="logout-btn">Sair</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- 3. CONTEÚDO PRINCIPAL (Escondido inicialmente com .hidden) -->
+    <!-- 5. CONTEÚDO PRINCIPAL -->
     <main id="conteudo-principal" class="hidden">
-
         <!-- Seção do Diário -->
         <section id="diario">
             <div class="section-header">
                 <h2>Como foi o seu dia?</h2>
                 <p>Transforme seus sentimentos em palavras.</p>
             </div>
-            
             <form id="form-diario">
                 <label for="relato-diario">Descreva seus sentimentos e reflexões:</label>
                 <textarea id="relato-diario" name="relato-diario" required placeholder="Sinta-se livre para desabafar..." rows="10"></textarea>
@@ -69,14 +158,14 @@
                     <input type="password" id="pin-acesso" name="pin-acesso" required minlength="4" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
                 </div>
                 
-                <button type="submit" class="btn-submit" style="width: 100%; background: var(--verde-acao); color: white; padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold;">
+                <button type="submit" class="btn-submit">
                     Finalizar Resumo e Analisar com IA
                 </button>
             </form>
         </section>
 
-        <!-- Outras Seções (Recomendações e Histórico) -->
-        <section id="recomendacoes">
+        <!-- Outras Seções -->
+        <section id="recomendacoes" class="hidden-section">
             <h2>Sugestões para seu Bem-Estar</h2>
             <article class="card-sugestao">
                 <div class="card-content">
@@ -88,7 +177,7 @@
             </article>
         </section>
 
-        <section id="historico">
+        <section id="historico" class="hidden-section">
             <h2>Meu Histórico de Evolução</h2>
             <div class="table-container">
                 <table>
@@ -99,7 +188,7 @@
                             <th>Ação Tomada</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tabela-historico">
                         <tr>
                             <td>10/02/2026</td>
                             <td><span class="tag tag-ansiedade">Ansiedade</span></td>
@@ -111,8 +200,7 @@
         </section>
     </main>
 
-    <!-- Botão SOS (Também pode começar escondido se preferir) -->
-    <aside>
+    <aside id="sos-container" class="hidden">
         <button type="button" class="btn-sos">🆘 Preciso de Acolhimento Agora</button>
     </aside>
 
@@ -120,7 +208,6 @@
         <p><small>&copy; 2026 Gênese do Equilíbrio</small></p>
     </footer>
 
-    <!-- LINK PARA O SEU JS (Certifique-se de que o nome do arquivo está correto) -->
     <script src="script.js"></script>
 </body>
 </html>

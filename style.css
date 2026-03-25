@@ -1,11 +1,9 @@
 /* 
-   GÊNESE DO EQUILÍBRIO - ESTILO UNIFICADO v3.0
-   Design: Minimalista, Terapêutico e Responsivo
+   GÊNESE DO EQUILÍBRIO - ESTILO UNIFICADO v3.1
+   Ajustes: Suporte para Cadastro e Recuperação de Senha
 */
 
-/* --- 1. CONFIGURAÇÕES GLOBAIS & VARIÁVEIS --- */
 :root {
-    /* Paleta Terapêutica */
     --verde-menta: #F0F9F4;
     --verde-acao: #2D6A4F;
     --verde-profundo: #1B4332;
@@ -13,25 +11,16 @@
     --azul-confianca: #0277BD;
     --bege-conforto: #FDFCF0;
     --off-white: #FCFBF9;
-    
-    /* Cores de Texto e UI */
     --texto-titulo: #1A1A1A;
     --texto-corpo: #4A4A4A;
     --sos-color: #E63946;
-    
-    /* Sombras e Bordas */
     --sombra-card: 0 10px 30px rgba(0, 0, 0, 0.05);
     --radius-lg: 20px;
     --radius-md: 12px;
     --transition: all 0.3s ease;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
 body {
     background-color: var(--off-white);
@@ -40,12 +29,9 @@ body {
     overflow-x: hidden;
 }
 
-/* CLASSE DE UTILIDADE (FUNDAMENTAL PARA O JS) */
-.hidden {
-    display: none !important;
-}
+.hidden { display: none !important; }
 
-/* --- 2. TELA DE LOGIN (FULLSCREEN) --- */
+/* --- AUTH SCREENS (Login, Cadastro, Esqueci Senha) --- */
 .auth-wrapper {
     min-height: 100vh;
     display: flex;
@@ -61,14 +47,19 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--sombra-card);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px; /* Levemente maior para o cadastro */
     text-align: center;
 }
 
-.auth-header h1 {
+.auth-header h1, .auth-header h2 {
     color: var(--verde-acao);
     margin-bottom: 0.5rem;
-    font-size: 1.8rem;
+}
+
+.auth-header p {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    color: #666;
 }
 
 .input-container {
@@ -93,9 +84,15 @@ body {
     transition: var(--transition);
 }
 
-.input-container input:focus {
-    border-color: var(--verde-acao);
+.input-container input:focus { border-color: var(--verde-acao); }
+
+/* Organização de colunas para o Cadastro */
+.input-group-row {
+    display: flex;
+    gap: 15px;
 }
+
+.input-group-row .input-container { flex: 1; }
 
 .btn-entrar {
     width: 100%;
@@ -107,6 +104,7 @@ body {
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
+    margin-top: 10px;
 }
 
 .btn-entrar:hover {
@@ -114,7 +112,21 @@ body {
     transform: translateY(-2px);
 }
 
-/* --- 3. HEADER & NAVEGAÇÃO --- */
+.auth-footer {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.auth-footer a {
+    color: var(--azul-confianca);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover { text-decoration: underline; }
+
+/* --- INTERFACE PRINCIPAL --- */
 header {
     background: white;
     padding: 1rem 5%;
@@ -127,17 +139,9 @@ header {
     z-index: 100;
 }
 
-.logo {
-    font-weight: 800;
-    color: var(--verde-acao);
-    font-size: 1.2rem;
-}
+.logo { font-weight: 800; color: var(--verde-acao); font-size: 1.2rem; }
 
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 20px;
-}
+nav ul { display: flex; list-style: none; gap: 20px; }
 
 nav a {
     text-decoration: none;
@@ -147,20 +151,11 @@ nav a {
     transition: var(--transition);
 }
 
-nav a:hover {
-    color: var(--verde-acao);
-}
+nav a:hover { color: var(--verde-acao); }
 
-.btn-logout {
-    color: var(--sos-color);
-}
+.btn-logout { color: var(--sos-color) !important; font-weight: bold; }
 
-/* --- 4. CONTEÚDO PRINCIPAL (MAIN) --- */
-main {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
+main { max-width: 900px; margin: 40px auto; padding: 0 20px; }
 
 section {
     background: white;
@@ -170,12 +165,9 @@ section {
     box-shadow: var(--sombra-card);
 }
 
-h2 {
-    color: var(--texto-titulo);
-    margin-bottom: 1.5rem;
-}
+/* Seções que começam escondidas no Main */
+.hidden-section { display: none; }
 
-/* DIÁRIO */
 textarea {
     width: 100%;
     min-height: 200px;
@@ -194,21 +186,10 @@ textarea {
     margin-bottom: 20px;
 }
 
-.btn-submit {
-    width: 100%;
-    background: var(--verde-acao);
-    color: white;
-    padding: 15px;
-    border: none;
-    border-radius: var(--radius-md);
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* HISTÓRICO */
+/* TABELAS E TAGS */
 .table-container { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
-th { text-align: left; padding: 12px; background: var(--azul-sereno); font-size: 0.8rem; }
+th { text-align: left; padding: 12px; background: var(--azul-sereno); font-size: 0.8rem; border-radius: 4px; }
 td { padding: 12px; border-bottom: 1px solid #eee; }
 
 .tag-ansiedade { 
@@ -219,7 +200,7 @@ td { padding: 12px; border-bottom: 1px solid #eee; }
     font-size: 0.75rem; 
 }
 
-/* --- 5. BOTÃO SOS & FOOTER --- */
+/* SOS & FOOTER */
 .btn-sos {
     position: fixed;
     bottom: 30px;
@@ -235,19 +216,13 @@ td { padding: 12px; border-bottom: 1px solid #eee; }
     z-index: 1000;
 }
 
-footer {
-    text-align: center;
-    padding: 2rem;
-    font-size: 0.8rem;
-    color: #999;
-}
+footer { text-align: center; padding: 2rem; font-size: 0.8rem; color: #999; }
 
-/* --- 6. RESPONSIVIDADE --- */
+/* RESPONSIVIDADE */
 @media (max-width: 600px) {
+    .input-group-row { flex-direction: column; gap: 0; }
     header { flex-direction: column; gap: 10px; }
     nav ul { gap: 10px; font-size: 0.8rem; }
     section { padding: 1.5rem; }
-    .btn-sos { bottom: 20px; right: 20px; padding: 12px 20px; }
 }
 
-}
