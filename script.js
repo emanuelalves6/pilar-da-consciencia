@@ -1,162 +1,160 @@
 /**
- * GÊNESE DO EQUILÍBRIO - Script v4.0
- * Funcionalidades: Fluxo de Cadastro, Recuperação de Senha, Login e Navegação
+ * GÊNESE DO EQUILÍBRIO - Script v9.0 (Completo)
+ * Funcionalidades: Navegação, Recuperação, Mini-jogo e SOS
  */
 
-// --- 1. MAPEAMENTO AMPLIADO DE ELEMENTOS ---
 const UI = {
-    // Seções principais
-    secaoLogin: document.getElementById('login'),
-    secaoCadastro: document.getElementById('cadastro'),
-    secaoEsqueci: document.getElementById('esqueci-senha'),
+    // Telas Principais
+    login: document.getElementById('login'),
+    cadastro: document.getElementById('cadastro'),
+    recuperar: document.getElementById('recuperar-senha'),
     header: document.getElementById('main-header'),
-    conteudoPrincipal: document.getElementById('conteudo-principal'),
-    sosContainer: document.getElementById('sos-container'),
-
-    // Formulários
-    formLogin: document.getElementById('form-login'),
-    formCadastro: document.getElementById('form-cadastro'),
-    formEsqueciEmail: document.getElementById('form-esqueci-email'),
-    formNovaSenha: document.getElementById('form-nova-senha'),
-    formDiario: document.getElementById('form-diario'),
-
-    // Links de navegação entre telas de Auth
-    linkCadastro: document.getElementById('link-cadastro'),
-    linkEsqueci: document.getElementById('link-esqueci'),
-    botoesVoltar: document.querySelectorAll('.voltar-login'),
-    btnLogout: document.getElementById('logout-btn'),
-
-    // Inputs específicos para lógica
-    inputRecuperarEmail: document.getElementById('recuperar-email'),
-    instrucaoRecuperar: document.getElementById('instrucao-recuperar')
+    main: document.getElementById('conteudo-principal'),
+    sos: document.getElementById('sos-container'),
+    footer: document.getElementById('main-footer'),
+    
+    // Navegação de Abas
+    secoesApp: document.querySelectorAll('.content-section'),
+    botoesNav: document.querySelectorAll('.nav-btn'),
+    
+    // Humor
+    botoesHumor: document.querySelectorAll('.btn-mood'),
+    humorSelecionado: null
 };
 
-// --- 2. GERENCIADOR DE TELAS (NAVEGAÇÃO) ---
-function mostrarTela(idDesejado) {
-    const telas = [UI.secaoLogin, UI.secaoCadastro, UI.secaoEsqueci, UI.conteudoPrincipal];
-    telas.forEach(tela => tela.classList.add('hidden'));
-    UI.header.classList.add('hidden');
-    UI.sosContainer.classList.add('hidden');
-
-    if (idDesejado === 'dashboard') {
+// --- 1. NAVEGAÇÃO ENTRE TELAS (LOGIN/APP) ---
+function navegarTela(destino) {
+    [UI.login, UI.cadastro, UI.recuperar, UI.header, UI.main, UI.sos, UI.footer].forEach(el => el?.classList.add('hidden'));
+    
+    if (destino === 'app') {
         UI.header.classList.remove('hidden');
-        UI.conteudoPrincipal.classList.remove('hidden');
-        UI.sosContainer.classList.remove('hidden');
+        UI.main.classList.remove('hidden');
+        UI.sos.classList.remove('hidden');
+        UI.footer.classList.remove('hidden');
+        trocarAba('diario'); // Começa sempre no diário
     } else {
-        document.getElementById(idDesejado).classList.remove('hidden');
+        document.getElementById(destino).classList.remove('hidden');
     }
 }
 
-// Eventos de troca de tela
-UI.linkCadastro.addEventListener('click', (e) => { e.preventDefault(); mostrarTela('cadastro'); });
-UI.linkEsqueci.addEventListener('click', (e) => { e.preventDefault(); mostrarTela('esqueci-senha'); });
-UI.botoesVoltar.forEach(btn => btn.addEventListener('click', (e) => { e.preventDefault(); mostrarTela('login'); }));
-
-// --- 3. LÓGICA DE CADASTRO ---
-UI.formCadastro.addEventListener('submit', (e) => {
-    e.preventDefault();
+// --- 2. NAVEGAÇÃO DE ABAS (DIÁRIO / HISTÓRICO / RELAX) ---
+function trocarAba(idAba) {
+    UI.secoesApp.forEach(sec => sec.classList.add('hidden'));
+    UI.botoesNav.forEach(btn => btn.classList.remove('active'));
     
-    const usuario = {
-        nome: document.getElementById('cad-nome').value,
-        email: document.getElementById('cad-email').value,
-        username: document.getElementById('cad-username').value,
-        pin: document.getElementById('cad-pin').value,
-        senha: document.getElementById('cad-senha').value
-    };
-
-    // Salva temporariamente no navegador
-    localStorage.setItem('usuarioAtivo', JSON.stringify(usuario));
+    const abaAtiva = document.getElementById(idAba);
+    const btnAtivo = document.querySelector(`[data-target="${idAba}"]`);
     
-    alert("Conta criada com sucesso! Agora você pode acessar.");
-    UI.formCadastro.reset();
-    mostrarTela('login');
+    if (abaAtiva) abaAtiva.classList.remove('hidden');
+    if (btnAtivo) btnAtivo.classList.add('active');
+
+    if (idAba === 'jogos') iniciarJogo();
+}
+
+UI.botoesNav.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const alvo = btn.getAttribute('data-target');
+        if (alvo) trocarAba(alvo);
+    });
 });
 
-// --- 4. LÓGICA DE LOGIN ---
-UI.formLogin.addEventListener('submit', (e) => {
+// --- 3. RECUPERAÇÃO DE SENHA (SIMULADA) ---
+let codigoGerado = null;
+
+document.getElementById('btn-esqueci-senha').addEventListener('click', () => navegarTela('recuperar-senha'));
+
+document.getElementById('btn-enviar-codigo').addEventListener('click', () => {
+    const email = document.getElementById('email-recuperar').value;
+    if (!email) return alert("Digite seu e-mail.");
+    
+    codigoGerado = Math.floor(1000 + Math.random() * 9000); // Gera 4 dígitos
+    alert(`[Simulação] Código enviado para ${email}: ${codigoGerado}`);
+    
+    document.getElementById('etapa-email').classList.add('hidden');
+    document.getElementById('etapa-codigo').classList.remove('hidden');
+});
+
+document.getElementById('btn-confirmar-nova-senha').addEventListener('click', () => {
+    const codDigitado = document.getElementById('codigo-verificacao').value;
+    const novaSenha = document.getElementById('nova-senha').value;
+    const user = JSON.parse(localStorage.getItem('user_genese'));
+
+    if (codDigitado == codigoGerado && user) {
+        user.senha = novaSenha;
+        localStorage.setItem('user_genese', JSON.stringify(user));
+        alert("Senha alterada com sucesso!");
+        navegarTela('login');
+    } else {
+        alert("Código incorreto ou usuário não encontrado.");
+    }
+});
+
+// --- 4. MINI-JOGO: BOLHAS DE CALMA ---
+let pontuacao = 0;
+function iniciarJogo() {
+    const container = document.getElementById('game-container');
+    const scoreEl = document.getElementById('game-score');
+    container.innerHTML = "";
+    pontuacao = 0;
+    scoreEl.innerText = pontuacao;
+
+    const gameInterval = setInterval(() => {
+        if (document.getElementById('jogos').classList.contains('hidden')) {
+            clearInterval(gameInterval);
+            return;
+        }
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.style.left = Math.random() * (container.offsetWidth - 50) + "px";
+        bubble.innerText = "🫧";
+        
+        bubble.onclick = () => {
+            pontuacao++;
+            scoreEl.innerText = pontuacao;
+            bubble.remove();
+        };
+
+        container.appendChild(bubble);
+        setTimeout(() => bubble.remove(), 4000);
+    }, 1000);
+}
+
+// --- 5. LOGIN E CADASTRO ---
+document.getElementById('form-login').addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('email-login').value;
     const senha = document.getElementById('senha-login').value;
+    const salvo = JSON.parse(localStorage.getItem('user_genese'));
 
-    // Busca o usuário "cadastrado"
-    const userSalvo = JSON.parse(localStorage.getItem('usuarioAtivo'));
-
-    if (userSalvo && email === userSalvo.email && senha === userSalvo.senha) {
-        mostrarTela('dashboard');
-        alert(`Bem-vindo de volta, ${userSalvo.username}!`);
+    if (salvo && email === salvo.email && senha === salvo.senha) {
+        navegarTela('app');
     } else {
-        alert("E-mail ou senha incorretos. (Dica: Cadastre-se primeiro)");
+        alert("E-mail ou senha incorretos.");
     }
 });
 
-// --- 5. FLUXO DE ESQUECI A SENHA ---
-UI.formEsqueciEmail.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = UI.inputRecuperarEmail.value;
-    
-    // Simula envio de e-mail
-    UI.instrucaoRecuperar.innerText = `Enviamos um código de 6 dígitos para ${email}. Digite-o abaixo:`;
-    UI.formEsqueciEmail.classList.add('hidden');
-    UI.formNovaSenha.classList.remove('hidden');
+document.querySelectorAll('.voltar-login').forEach(el => {
+    el.onclick = () => navegarTela('login');
 });
 
-UI.formNovaSenha.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const novaSenha = document.getElementById('nova-senha').value;
-    const userSalvo = JSON.parse(localStorage.getItem('usuarioAtivo'));
-
-    if(userSalvo) {
-        userSalvo.senha = novaSenha;
-        localStorage.setItem('usuarioAtivo', JSON.stringify(userSalvo));
-    }
-
-    alert("Senha alterada com sucesso! Faça login com a nova senha.");
-    UI.formNovaSenha.classList.add('hidden');
-    UI.formEsqueciEmail.classList.remove('hidden');
-    UI.instrucaoRecuperar.innerText = "Digite seu e-mail para receber o link de alteração.";
-    mostrarTela('login');
+// Logout
+document.getElementById('logout-btn').addEventListener('click', () => {
+    location.reload(); // Reinicia o app para segurança
 });
 
-// --- 6. FUNCIONALIDADES DO DIÁRIO ---
-UI.formDiario.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const pinDigitado = document.getElementById('pin-acesso').value;
-    const userSalvo = JSON.parse(localStorage.getItem('usuarioAtivo'));
-    
-    // Se não tiver cadastro, usa o 1234 como padrão, se tiver, usa o PIN do cadastro
-    const pinCorreto = userSalvo ? userSalvo.pin : "1234";
-
-    if (pinDigitado === pinCorreto) {
-        alert("Relato salvo com segurança no seu histórico!");
-        UI.formDiario.reset();
-    } else {
-        alert("PIN incorreto. Acesso negado ao diário.");
-    }
-});
-
-// --- 7. LOGOUT E SOS ---
-UI.btnLogout.addEventListener('click', (e) => {
-    e.preventDefault();
-    if(confirm("Deseja encerrar sua sessão?")) mostrarTela('login');
-});
-
-document.querySelector('.btn-sos').addEventListener('click', () => {
-    if(confirm("Deseja ser redirecionado ao CVV (Apoio Emocional)?")) {
-        window.open('https://www.cvv.org.br', '_blank');
-    }
-});
-
-// --- 8. NAVEGAÇÃO ENTRE ABAS DO DASHBOARD ---
-document.querySelectorAll('nav a').forEach(link => {
-    link.addEventListener('click', (e) => {
-        const targetId = link.getAttribute('href').replace('#', '');
-        if(targetId !== '' && targetId !== '#') {
-            e.preventDefault();
-            // Esconde todas as seções do main
-            document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
-            // Mostra apenas a clicada
-            document.getElementById(targetId).classList.remove('hidden');
-        }
+// Inicialização de Humores
+UI.botoesHumor.forEach(btn => {
+    btn.addEventListener('click', () => {
+        UI.botoesHumor.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        UI.humorSelecionado = btn.dataset.mood;
     });
 });
+
+// SOS CVV
+document.getElementById('btn-cvv').onclick = () => window.open('https://www.cvv.org.br', '_blank');
+
+// Inicia na tela de login
+navegarTela('login');
 

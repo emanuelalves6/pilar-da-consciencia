@@ -3,211 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gênese do Equilíbrio | Diário Terapêutico</title>
+    <title>Gênese do Equilíbrio | Jornada de Autoconhecimento</title>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-    <!-- 1. TELA DE LOGIN -->
+    <div class="theme-switch-wrapper">
+        <button id="toggle-dark-mode" title="Alternar Modo Escuro">🌓</button>
+    </div>
+
+    <!-- TELA DE LOGIN -->
     <section id="login" class="auth-wrapper">
-        <div class="auth-card">
+        <div class="auth-card animate-in">
             <div class="auth-header">
+                <div class="brand-icon">🌿</div>
                 <h1>Gênese do Equilíbrio</h1>
-                <p>Acesse seu refúgio seguro de autoconhecimento.</p>
+                <p>Seu refúgio seguro de paz e evolução.</p>
             </div>
-            
             <form id="form-login">
                 <div class="input-container">
-                    <label for="email-login">E-mail</label>
-                    <input type="email" id="email-login" placeholder="exemplo@email.com" required>
-                </div>
-
-                <div class="input-container">
-                    <label for="senha-login">Senha</label>
-                    <input type="password" id="senha-login" placeholder="••••••••" required>
-                </div>
-
-                <button type="submit" class="btn-entrar">Acessar Meu Diário</button>
-            </form>
-            
-            <div class="auth-footer">
-                <a href="#" id="link-esqueci">Esqueci minha senha</a> | 
-                <a href="#" id="link-cadastro">Criar nova conta</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. TELA DE CADASTRO (Nova) -->
-    <section id="cadastro" class="auth-wrapper hidden">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h2>Crie sua Conta</h2>
-                <p>Comece sua jornada de equilíbrio.</p>
-            </div>
-            
-            <form id="form-cadastro">
-                <div class="input-group-row">
-                    <div class="input-container">
-                        <label>Nome Completo</label>
-                        <input type="text" id="cad-nome" required>
-                    </div>
-                    <div class="input-container">
-                        <label>Usuário</label>
-                        <input type="text" id="cad-username" required>
-                    </div>
-                </div>
-
-                <div class="input-container">
                     <label>E-mail</label>
-                    <input type="email" id="cad-email" required>
+                    <input type="email" id="email-login" placeholder="seu@email.com" required>
                 </div>
-
-                <div class="input-group-row">
-                    <div class="input-container">
-                        <label>Telefone</label>
-                        <input type="tel" id="cad-tel" placeholder="(00) 00000-0000">
-                    </div>
-                    <div class="input-container">
-                        <label>PIN (4 dígitos)</label>
-                        <input type="password" id="cad-pin" maxlength="4" pattern="[0-9]{4}" placeholder="1234" required>
-                    </div>
-                </div>
-
-                <div class="input-container">
-                    <label>Endereço</label>
-                    <input type="text" id="cad-endereco">
-                </div>
-
                 <div class="input-container">
                     <label>Senha</label>
-                    <input type="password" id="cad-senha" required>
+                    <input type="password" id="senha-login" placeholder="••••••••" required>
                 </div>
-
-                <button type="submit" class="btn-entrar">Finalizar Cadastro</button>
+                <button type="submit" class="btn-entrar">Acessar Jornada</button>
             </form>
             <div class="auth-footer">
-                <a href="#" class="voltar-login">Já tenho conta? Entrar</a>
+                <a href="#" id="btn-esqueci-senha">Esqueci a senha</a>
+                <span class="separator">|</span>
+                <a href="#" id="link-cadastro">Criar conta</a>
             </div>
         </div>
     </section>
 
-    <!-- 3. TELA ESQUECI A SENHA (Nova) -->
-    <section id="esqueci-senha" class="auth-wrapper hidden">
+    <!-- TELA RECUPERAR SENHA (NOVA) -->
+    <section id="recuperar-senha" class="auth-wrapper hidden">
         <div class="auth-card">
-            <div class="auth-header">
-                <h2>Recuperar Acesso</h2>
-                <p id="instrucao-recuperar">Digite seu e-mail para receber o link de alteração.</p>
+            <h2>Recuperar Acesso</h2>
+            <p id="msg-recuperacao">Enviaremos um código para seu e-mail.</p>
+            
+            <div id="etapa-email">
+                <input type="email" id="email-recuperar" placeholder="Seu e-mail cadastrado">
+                <button class="btn-entrar" id="btn-enviar-codigo">Enviar Código</button>
+            </div>
+
+            <div id="etapa-codigo" class="hidden">
+                <input type="text" id="codigo-verificacao" placeholder="Digite o código de 4 dígitos">
+                <input type="password" id="nova-senha" placeholder="Nova Senha">
+                <button class="btn-entrar" id="btn-confirmar-nova-senha">Redefinir Senha</button>
             </div>
             
-            <!-- Passo 1: Enviar Email -->
-            <form id="form-esqueci-email">
-                <div class="input-container">
-                    <label>E-mail cadastrado</label>
-                    <input type="email" id="recuperar-email" required>
-                </div>
-                <button type="submit" class="btn-entrar">Enviar Link</button>
-            </form>
-
-            <!-- Passo 2: Nova Senha (Escondido via JS) -->
-            <form id="form-nova-senha" class="hidden">
-                <div class="input-container">
-                    <label>Código enviado</label>
-                    <input type="text" id="codigo-verificacao" placeholder="Ex: 123456" required>
-                </div>
-                <div class="input-container">
-                    <label>Nova Senha</label>
-                    <input type="password" id="nova-senha" required>
-                </div>
-                <button type="submit" class="btn-entrar">Alterar Senha</button>
-            </form>
-
-            <div class="auth-footer">
-                <a href="#" class="voltar-login">Voltar ao Login</a>
-            </div>
+            <div class="auth-footer"><a href="#" class="voltar-login">Voltar ao Login</a></div>
         </div>
     </section>
 
-    <!-- 4. HEADER (Escondido) -->
+    <!-- TELA DE CADASTRO -->
+    <section id="cadastro" class="auth-wrapper hidden">
+        <div class="auth-card">
+            <h2>Nova Jornada</h2>
+            <form id="form-cadastro">
+                <div class="input-group-row">
+                    <div class="input-container"><label>Nome</label><input type="text" id="cad-nome" required></div>
+                    <div class="input-container"><label>E-mail</label><input type="email" id="cad-email" required></div>
+                </div>
+                <div class="input-group-row">
+                    <div class="input-container"><label>PIN (4 dígitos)</label><input type="password" id="cad-pin" maxlength="4" required></div>
+                    <div class="input-container"><label>Senha</label><input type="password" id="cad-senha" required></div>
+                </div>
+                <button type="submit" class="btn-entrar">Começar Agora</button>
+            </form>
+            <div class="auth-footer"><a href="#" class="voltar-login">Já sou membro</a></div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
     <header class="hidden" id="main-header">
-        <div class="logo">Gênese do Equilíbrio</div>
-        <nav aria-label="Navegação principal">
-            <ul>
-                <li><a href="#diario">Diário</a></li>
-                <li><a href="#recomendacoes">Recomendações</a></li>
-                <li><a href="#historico">Meu Histórico</a></li>
-                <li><a href="#" class="btn-logout" id="logout-btn">Sair</a></li>
-            </ul>
-        </nav>
+        <div class="header-content">
+            <div class="logo">🌿 Gênese</div>
+            <div class="user-stats">
+                <span id="streak-count">🔥 0 dias</span>
+                <span id="user-level">🌱 Semente</span>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn" data-target="diario">📝 Diário</button>
+                <button class="nav-btn" data-target="historico">📜 Histórico</button>
+                <button class="nav-btn" data-target="jogos">🎮 Relax</button>
+                <button id="logout-btn" class="nav-btn btn-sair">🚪 Sair</button>
+            </nav>
+        </div>
     </header>
 
-    <!-- 5. CONTEÚDO PRINCIPAL -->
-    <main id="conteudo-principal" class="hidden">
-        <!-- Seção do Diário -->
-        <section id="diario">
-            <div class="section-header">
-                <h2>Como foi o seu dia?</h2>
-                <p>Transforme seus sentimentos em palavras.</p>
+    <main id="conteudo-principal" class="hidden container">
+        <!-- DIÁRIO -->
+        <section id="diario" class="content-section animate-in">
+            <div class="welcome-box">
+                <h2>Olá, <span id="user-display-name">Viajante</span></h2>
+                <p>Como está seu coração hoje?</p>
             </div>
-            <form id="form-diario">
-                <label for="relato-diario">Descreva seus sentimentos e reflexões:</label>
-                <textarea id="relato-diario" name="relato-diario" required placeholder="Sinta-se livre para desabafar..." rows="10"></textarea>
-                
+
+            <div class="mood-selector">
+                <button class="btn-mood" data-mood="Radiante">🤩</button>
+                <button class="btn-mood" data-mood="Bem">😊</button>
+                <button class="btn-mood" data-mood="Neutro">😐</button>
+                <button class="btn-mood" data-mood="Triste">😔</button>
+                <button class="btn-mood" data-mood="Ansioso">😰</button>
+            </div>
+            
+            <form id="form-diario" class="glass-card">
+                <textarea id="relato-diario" required placeholder="Desabafe aqui..." rows="6"></textarea>
                 <div class="security-box">
-                    <label for="pin-acesso">Confirme seu PIN de Segurança (Teste: 1234):</label>
-                    <input type="password" id="pin-acesso" name="pin-acesso" required minlength="4" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
+                    <input type="password" id="pin-acesso" required maxlength="4" placeholder="PIN de 4 dígitos">
                 </div>
-                
-                <button type="submit" class="btn-submit">
-                    Finalizar Resumo e Analisar com IA
-                </button>
+                <button type="submit" class="btn-submit">Salvar Momento</button>
             </form>
+
+            <div id="ia-feedback" class="hidden feedback-card">
+                <p id="texto-analise"></p>
+                <small id="texto-livro"></small>
+            </div>
         </section>
 
-        <!-- Outras Seções -->
-        <section id="recomendacoes" class="hidden-section">
-            <h2>Sugestões para seu Bem-Estar</h2>
-            <article class="card-sugestao">
-                <div class="card-content">
-                    <h3>O Homem em Busca de Sentido</h3>
-                    <p><span class="badge">Livro</span></p>
-                    <p>Uma obra poderosa sobre resiliência e propósito.</p>
-                    <a href="#" class="btn-details">Ver detalhes da obra</a>
+        <!-- HISTÓRICO -->
+        <section id="historico" class="content-section hidden">
+            <div class="tabela-box glass-card">
+                <h3>Seus Registros</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Data</th><th>Humor</th><th>Resumo</th><th>Ação</th></tr>
+                        </thead>
+                        <tbody id="tabela-historico"></tbody>
+                    </table>
                 </div>
-            </article>
+            </div>
         </section>
 
-        <section id="historico" class="hidden-section">
-            <h2>Meu Histórico de Evolução</h2>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Sentimento</th>
-                            <th>Ação Tomada</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-historico">
-                        <tr>
-                            <td>10/02/2026</td>
-                            <td><span class="tag tag-ansiedade">Ansiedade</span></td>
-                            <td>Meditação Guiada</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- MINI JOGO (NOVO) -->
+        <section id="jogos" class="content-section hidden">
+            <div class="game-card glass-card">
+                <h3>Bolhas de Calma</h3>
+                <p>Clique nas bolhas para estourar o estresse!</p>
+                <div id="game-container"></div>
+                <p>Pontos: <span id="game-score">0</span></p>
             </div>
         </section>
     </main>
 
+    <!-- SOS & RODAPÉ -->
     <aside id="sos-container" class="hidden">
-        <button type="button" class="btn-sos">🆘 Preciso de Acolhimento Agora</button>
+        <button class="btn-sos" id="btn-sos-main">🆘</button>
+        <div id="modal-respiracao" class="modal-sos hidden">
+            <div class="modal-content glass-card">
+                <h3>Respire</h3>
+                <div class="breathing-circle"></div>
+                <p id="breathing-text">Inspire...</p>
+                <button id="btn-cvv" class="btn-entrar">Falar com CVV (188)</button>
+                <button id="close-sos" class="btn-link">Fechar</button>
+            </div>
+        </div>
     </aside>
 
-    <footer>
-        <p><small>&copy; 2026 Gênese do Equilíbrio</small></p>
+    <footer id="main-footer" class="hidden">
+        <p>⚠️ <strong>Aviso:</strong> Este site é uma ferramenta de apoio emocional e autoconhecimento. Ele <strong>não substitui</strong> o acompanhamento médico ou psicológico profissional.</p>
     </footer>
 
+    <script src="db.js"></script>
+    <script src="controller.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
