@@ -1,6 +1,6 @@
 /**
  * GÊNESE DO EQUILÍBRIO - Banco de Dados v9.0 (Estável)
- * Foco: Persistência de Evolução e Recuperação de Acesso
+ * Foco: Persistência de Evolução e Recuperação de Acesso via IndexedDB
  */
 
 const NOME_DB = "GeneseEquilibrioV9";
@@ -18,7 +18,7 @@ async function abrirConexao() {
             if (!db.objectStoreNames.contains(STORE_DIARIO)) {
                 db.createObjectStore(STORE_DIARIO, { keyPath: "id", autoIncrement: true });
             }
-            // Tabela de usuários para persistência de XP e Senha
+            // Tabela de usuários para persistência de XP, Senha e PIN
             if (!db.objectStoreNames.contains(STORE_USER)) {
                 db.createObjectStore(STORE_USER, { keyPath: "email" });
             }
@@ -36,7 +36,7 @@ async function salvarRelato(dados) {
     return new Promise((resolve, reject) => {
         const transacao = db.transaction([STORE_DIARIO], "readwrite");
         const store = transacao.objectStore(STORE_DIARIO);
-        // Garante que o relato tenha data ISO para ordenação correta
+        // Garante que o relato tenha data ISO para ordenação
         dados.dataISO = new Date().toISOString();
         const request = store.add(dados);
         request.onsuccess = () => resolve(request.result);
@@ -93,5 +93,4 @@ async function buscarPerfilPorEmail(email) {
     });
 }
 
-console.log("📦 Banco de Dados v9.0 sincronizado.");
-
+console.log("📦 Banco de Dados v9.0 sincronizado e pronto.");
