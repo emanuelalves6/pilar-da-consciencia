@@ -3,305 +3,1334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gênese do Equilíbrio | Ecossistema de Saúde Mental</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="description" content="Pilar da Consciencia - Plataforma de saude mental, autocuidado e combate a autossabotagem baseada em TCC e Psicologia Positiva.">
+    <meta name="theme-color" content="#52B788">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Genese do Equilibrio | Jornada de Autoconhecimento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
 </head>
-<body class="light-theme">
+<body>
 
-    <div id="loader" class="hidden">
-        <div class="spinner"></div>
+    <!-- SKIP NAVIGATION (Acessibilidade) -->
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteudo principal</a>
+
+    <!-- CONTROLES GLOBAIS: Tema e Acessibilidade -->
+    <div class="global-controls" id="global-controls">
+        <button id="toggle-dark-mode" class="control-btn" title="Alternar Modo Escuro" aria-label="Alternar modo escuro">
+            <i data-lucide="moon"></i>
+        </button>
+        <button id="toggle-accessibility" class="control-btn" title="Acessibilidade" aria-label="Abrir painel de acessibilidade">
+            <i data-lucide="settings"></i>
+        </button>
     </div>
 
-    <section id="login" class="auth-wrapper">
+    <!-- PAINEL DE ACESSIBILIDADE (Feature Extra 1) -->
+    <aside id="painel-acessibilidade" class="accessibility-panel hidden" role="complementary" aria-label="Configuracoes de acessibilidade">
+        <div class="panel-content glass-card">
+            <div class="panel-header">
+                <h3><i data-lucide="accessibility"></i> Acessibilidade</h3>
+                <button id="close-acessibilidade" class="btn-icon" aria-label="Fechar painel"><i data-lucide="x"></i></button>
+            </div>
+            <div class="panel-body">
+                <div class="setting-group">
+                    <label for="font-size-range">Tamanho da Fonte</label>
+                    <input type="range" id="font-size-range" min="12" max="24" value="16" step="1">
+                    <span id="font-size-value">16px</span>
+                </div>
+                <div class="setting-group">
+                    <label for="contrast-toggle">Alto Contraste</label>
+                    <label class="toggle-switch"><input type="checkbox" id="contrast-toggle"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="setting-group">
+                    <label for="reduce-motion">Reduzir Animacoes</label>
+                    <label class="toggle-switch"><input type="checkbox" id="reduce-motion"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="setting-group">
+                    <label for="dyslexia-font">Fonte para Dislexia</label>
+                    <label class="toggle-switch"><input type="checkbox" id="dyslexia-font"><span class="toggle-slider"></span></label>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- TELA DE BOAS-VINDAS / SPLASH (Feature Extra 2) -->
+    <section id="splash-screen" class="splash-screen" role="presentation" aria-hidden="true">
+        <div class="splash-content">
+            <div class="splash-logo" aria-hidden="true"><i data-lucide="leaf" class="splash-icon"></i></div>
+            <h1 class="splash-title">Genese do Equilibrio</h1>
+            <p class="splash-subtitle">Sua jornada de autoconhecimento comeca aqui</p>
+            <div class="splash-loader"><div class="loader-bar"></div></div>
+        </div>
+    </section>
+
+    <!-- TELA DE LOGIN (RF01 / RF05) -->
+    <section id="login" class="auth-wrapper hidden" role="main" aria-labelledby="login-heading">
         <div class="auth-card animate-in">
             <div class="auth-header">
-                <div class="brand-logo">🌿</div>
-                <h1>Gênese do Equilíbrio</h1>
-                <p>Bem-vindo de volta ao seu espaço de cura.</p>
+                <div class="brand-icon" aria-hidden="true"><i data-lucide="leaf"></i></div>
+                <h1 id="login-heading">Genese do Equilibrio</h1>
+                <p class="auth-subtitle">Seu refugio seguro de paz e evolucao.</p>
             </div>
-            <form id="form-login">
-                <div class="input-group">
-                    <label for="email-login">E-mail</label>
-                    <input type="email" id="email-login" placeholder="exemplo@email.com" required>
+            <form id="form-login" novalidate autocomplete="on">
+                <div class="input-container">
+                    <label for="email-login"><i data-lucide="mail"></i> E-mail</label>
+                    <input type="email" id="email-login" name="email" placeholder="seu@email.com" required autocomplete="email" aria-required="true">
+                    <span class="input-error" id="email-login-error" role="alert"></span>
                 </div>
-                <div class="input-group">
-                    <label for="senha-login">Senha</label>
-                    <input type="password" id="senha-login" placeholder="••••••••" required>
+                <div class="input-container">
+                    <label for="senha-login"><i data-lucide="lock"></i> Senha</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="senha-login" name="password" placeholder="********" required autocomplete="current-password" aria-required="true">
+                        <button type="button" class="btn-toggle-password" aria-label="Mostrar senha"><i data-lucide="eye"></i></button>
+                    </div>
+                    <span class="input-error" id="senha-login-error" role="alert"></span>
                 </div>
-                
-                <div class="captcha-container">
-                    <label id="label-captcha">Quanto é 5 + 3?</label>
-                    <input type="number" id="check-robot-login" placeholder="Resultado" required>
+                <div class="login-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember-me" name="remember">
+                        <span class="checkmark"></span> Lembrar de mim
+                    </label>
                 </div>
-
-                <button type="submit" class="btn-primary">Acessar Ecossistema</button>
+                <button type="submit" class="btn-primary btn-full"><i data-lucide="log-in"></i> Acessar Jornada</button>
             </form>
-            <div class="auth-options">
-                <button class="btn-link" id="btn-esqueci-senha">Esqueci minha senha</button>
-<section id="recuperar-senha" class="auth-wrapper hidden">
-    <div class="auth-card">
-        <h2>Recuperar Acesso</h2>
-        <p>Insira seu e-mail para receber as instruções.</p>
-        <div class="input-group">
-            <label>E-mail cadastrado</label>
-            <input type="email" placeholder="seu@email.com">
+            <!-- Login Social (Feature Extra 3) -->
+            <div class="social-login-divider"><span>ou continue com</span></div>
+            <div class="social-login-buttons">
+                <button type="button" class="btn-social btn-google" aria-label="Entrar com Google"><i data-lucide="chrome"></i> Google</button>
+                <button type="button" class="btn-social btn-apple" aria-label="Entrar com Apple"><i data-lucide="smartphone"></i> Apple</button>
+            </div>
+            <div class="auth-footer">
+                <a href="#" id="btn-esqueci-senha" class="auth-link">Esqueci a senha</a>
+                <span class="separator" aria-hidden="true">|</span>
+                <a href="#" id="link-cadastro" class="auth-link">Criar conta</a>
+            </div>
         </div>
-        <button class="btn-primary">Enviar link de recuperação</button>
-        <button class="btn-link voltar-login">Voltar ao login</button>
+    </section>
+
+    <!-- TELA DE RECUPERAR SENHA -->
+    <section id="recuperar-senha" class="auth-wrapper hidden" role="main" aria-labelledby="recuperar-heading">
+        <div class="auth-card animate-in">
+            <div class="auth-header">
+                <div class="brand-icon" aria-hidden="true"><i data-lucide="key-round"></i></div>
+                <h2 id="recuperar-heading">Recuperar Acesso</h2>
+            </div>
+            <p id="msg-recuperacao" class="auth-subtitle">Enviaremos um codigo para seu e-mail.</p>
+            <div id="etapa-email">
+                <div class="input-container">
+                    <label for="email-recuperar"><i data-lucide="mail"></i> E-mail cadastrado</label>
+                    <input type="email" id="email-recuperar" placeholder="Seu e-mail cadastrado" required>
+                    <span class="input-error" role="alert"></span>
+                </div>
+                <button class="btn-primary btn-full" id="btn-enviar-codigo"><i data-lucide="send"></i> Enviar Codigo</button>
+            </div>
+            <div id="etapa-codigo" class="hidden">
+                <div class="input-container">
+                    <label><i data-lucide="hash"></i> Codigo de Verificacao</label>
+                    <div class="code-input-group">
+                        <input type="text" class="code-digit" maxlength="1" inputmode="numeric" aria-label="Digito 1">
+                        <input type="text" class="code-digit" maxlength="1" inputmode="numeric" aria-label="Digito 2">
+                        <input type="text" class="code-digit" maxlength="1" inputmode="numeric" aria-label="Digito 3">
+                        <input type="text" class="code-digit" maxlength="1" inputmode="numeric" aria-label="Digito 4">
+                    </div>
+                    <input type="hidden" id="codigo-verificacao">
+                </div>
+                <div class="input-container">
+                    <label for="nova-senha"><i data-lucide="lock"></i> Nova Senha</label>
+                    <input type="password" id="nova-senha" placeholder="Crie uma nova senha" required>
+                    <div class="password-strength" id="password-strength">
+                        <div class="strength-bar"></div>
+                        <span class="strength-text">Forca da senha</span>
+                    </div>
+                </div>
+                <button class="btn-primary btn-full" id="btn-confirmar-nova-senha"><i data-lucide="check-circle"></i> Redefinir Senha</button>
+            </div>
+            <div class="auth-footer">
+                <a href="#" class="voltar-login auth-link"><i data-lucide="arrow-left"></i> Voltar ao Login</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TELA DE CADASTRO + ONBOARDING (RF01) -->
+    <section id="cadastro" class="auth-wrapper hidden" role="main" aria-labelledby="cadastro-heading">
+        <div class="auth-card auth-card--wide animate-in">
+            <div class="auth-header">
+                <div class="brand-icon" aria-hidden="true"><i data-lucide="user-plus"></i></div>
+                <h2 id="cadastro-heading">Nova Jornada</h2>
+                <p class="auth-subtitle">Crie sua conta e comece a transformar sua vida.</p>
+            </div>
+            <!-- Stepper de Progresso do Onboarding -->
+            <div class="onboarding-stepper" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+                <div class="step active" data-step="1"><span class="step-number">1</span><span class="step-label">Dados</span></div>
+                <div class="step-line"></div>
+                <div class="step" data-step="2"><span class="step-number">2</span><span class="step-label">Seguranca</span></div>
+                <div class="step-line"></div>
+                <div class="step" data-step="3"><span class="step-number">3</span><span class="step-label">Perfil Emocional</span></div>
+            </div>
+            <form id="form-cadastro" novalidate>
+                <!-- Etapa 1: Dados Pessoais -->
+                <fieldset id="step-dados" class="onboarding-step active">
+                    <legend class="sr-only">Dados Pessoais</legend>
+                    <div class="input-group-row">
+                        <div class="input-container">
+                            <label for="cad-nome"><i data-lucide="user"></i> Nome Completo</label>
+                            <input type="text" id="cad-nome" name="nome" required autocomplete="name" aria-required="true">
+                            <span class="input-error" role="alert"></span>
+                        </div>
+                        <div class="input-container">
+                            <label for="cad-email"><i data-lucide="mail"></i> E-mail</label>
+                            <input type="email" id="cad-email" name="email" required autocomplete="email" aria-required="true">
+                            <span class="input-error" role="alert"></span>
+                        </div>
+                    </div>
+                    <div class="input-group-row">
+                        <div class="input-container">
+                            <label for="cad-nascimento"><i data-lucide="calendar"></i> Data de Nascimento</label>
+                            <input type="date" id="cad-nascimento" name="nascimento">
+                        </div>
+                        <div class="input-container">
+                            <label for="cad-telefone"><i data-lucide="phone"></i> Telefone</label>
+                            <input type="tel" id="cad-telefone" name="telefone" placeholder="(00) 00000-0000" autocomplete="tel">
+                        </div>
+                    </div>
+                    <div class="step-actions">
+                        <button type="button" class="btn-primary btn-full btn-next-step" data-next="2">Proximo <i data-lucide="arrow-right"></i></button>
+                    </div>
+                </fieldset>
+                <!-- Etapa 2: Seguranca (RF05) -->
+                <fieldset id="step-seguranca" class="onboarding-step hidden">
+                    <legend class="sr-only">Seguranca</legend>
+                    <div class="input-container">
+                        <label for="cad-senha"><i data-lucide="lock"></i> Senha</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="cad-senha" name="senha" required autocomplete="new-password" aria-required="true" minlength="8">
+                            <button type="button" class="btn-toggle-password" aria-label="Mostrar senha"><i data-lucide="eye"></i></button>
+                        </div>
+                        <div class="password-strength" id="cad-password-strength"><div class="strength-bar"></div><span class="strength-text"></span></div>
+                    </div>
+                    <div class="input-container">
+                        <label for="cad-senha-confirm"><i data-lucide="lock"></i> Confirmar Senha</label>
+                        <input type="password" id="cad-senha-confirm" name="senha-confirm" required autocomplete="new-password">
+                        <span class="input-error" role="alert"></span>
+                    </div>
+                    <div class="input-container">
+                        <label for="cad-pin"><i data-lucide="shield"></i> PIN de Seguranca (4 digitos)</label>
+                        <input type="password" id="cad-pin" name="pin" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" required aria-required="true" placeholder="****">
+                        <p class="input-hint">O PIN protege seus registros pessoais do diario.</p>
+                    </div>
+                    <div class="step-actions step-actions--split">
+                        <button type="button" class="btn-secondary btn-prev-step" data-prev="1"><i data-lucide="arrow-left"></i> Voltar</button>
+                        <button type="button" class="btn-primary btn-next-step" data-next="3">Proximo <i data-lucide="arrow-right"></i></button>
+                    </div>
+                </fieldset>
+                <!-- Etapa 3: Perfil Emocional (RF01) -->
+                <fieldset id="step-perfil-emocional" class="onboarding-step hidden">
+                    <legend class="sr-only">Avaliacao Emocional Inicial</legend>
+                    <p class="step-description">Nos ajude a entender voce melhor. Selecione seus desafios atuais:</p>
+                    <div class="emotional-tags" role="group" aria-label="Desafios emocionais">
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="timidez"> <span>Timidez</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="ansiedade"> <span>Ansiedade</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="procrastinacao"> <span>Procrastinacao</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="baixa-autoestima"> <span>Baixa Autoestima</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="perfeccionismo"> <span>Perfeccionismo</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="estresse"> <span>Estresse</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="insonia"> <span>Insonia</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="solidao"> <span>Solidao</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="irritabilidade"> <span>Irritabilidade</span></label>
+                        <label class="tag-chip"><input type="checkbox" name="desafios" value="comparacao-social"> <span>Comparacao Social</span></label>
+                    </div>
+                    <div class="input-container">
+                        <label for="cad-objetivo">Qual seu principal objetivo?</label>
+                        <select id="cad-objetivo" name="objetivo" class="select-styled">
+                            <option value="">Selecione...</option>
+                            <option value="autoconhecimento">Autoconhecimento</option>
+                            <option value="controle-ansiedade">Controlar Ansiedade</option>
+                            <option value="habitos">Criar Habitos Saudaveis</option>
+                            <option value="produtividade">Melhorar Produtividade</option>
+                            <option value="relacoes">Melhorar Relacoes</option>
+                            <option value="autoestima">Fortalecer Autoestima</option>
+                        </select>
+                    </div>
+                    <div class="terms-container">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="cad-termos" required aria-required="true">
+                            <span class="checkmark"></span>
+                            Concordo com os <a href="#termos" class="auth-link">Termos de Uso</a> e <a href="#privacidade" class="auth-link">Politica de Privacidade (LGPD)</a>
+                        </label>
+                    </div>
+                    <div class="step-actions step-actions--split">
+                        <button type="button" class="btn-secondary btn-prev-step" data-prev="2"><i data-lucide="arrow-left"></i> Voltar</button>
+                        <button type="submit" class="btn-primary"><i data-lucide="rocket"></i> Comecar Jornada</button>
+                    </div>
+                </fieldset>
+            </form>
+            <div class="auth-footer">
+                <a href="#" class="voltar-login auth-link"><i data-lucide="arrow-left"></i> Ja sou membro</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- VERIFICACAO DE PIN (RF05) -->
+    <div id="modal-pin" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pin-modal-title">
+        <div class="modal-card glass-card animate-in">
+            <div class="modal-header"><i data-lucide="shield-check"></i><h3 id="pin-modal-title">Verificacao de Seguranca</h3></div>
+            <p>Digite seu PIN para acessar esta area protegida.</p>
+            <div class="pin-input-group">
+                <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" aria-label="PIN digito 1">
+                <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" aria-label="PIN digito 2">
+                <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" aria-label="PIN digito 3">
+                <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" aria-label="PIN digito 4">
+            </div>
+            <button class="btn-primary btn-full" id="btn-verificar-pin"><i data-lucide="unlock"></i> Verificar</button>
+            <button class="btn-link" id="btn-cancelar-pin">Cancelar</button>
+        </div>
     </div>
-</section>
-                <button class="btn-link" id="link-cadastro">Criar nova jornada</button>
-            </div>
-        </div>
-    </section>
 
-    <section id="cadastro" class="auth-wrapper hidden">
-        <div class="auth-card wide-card">
-            <h2>Iniciar Nova Jornada</h2>
-            <p>Preencha seus dados para personalizarmos sua experiência.</p>
-            <form id="form-cadastro">
-                <div class="grid-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" id="cad-nome" required placeholder="Nome">
-                    </div>
-                    <div class="input-group">
-                        <label>E-mail</label>
-                        <input type="email" id="cad-email" required placeholder="email@provedor.com">
-                    </div>
-                    <div class="input-group">
-                        <label>CPF (Para Relatórios Oficiais)</label>
-                        <input type="text" id="cad-cpf" maxlength="14" placeholder="000.000.000-00" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Nome de Usuário (@username)</label>
-                        <input type="text" id="cad-username" placeholder="seu_usuario" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Senha Forte</label>
-                        <input type="password" id="cad-senha" required placeholder="Mínimo 8 caracteres">
-                    </div>
-                    <div class="input-group">
-                        <label>Confirme a Senha</label>
-                        <input type="password" id="cad-senha-confirma" required>
-                    </div>
-                </div>
-
-                <div class="initial-assessment">
-                    <h3>Como você se sente no geral?</h3>
-                    <div class="assessment-chips">
-                        <label><input type="checkbox" name="perfil" value="ansiedade"> Ansiedade</label>
-                        <label><input type="checkbox" name="perfil" value="timidez"> Timidez</label>
-                        <label><input type="checkbox" name="perfil" value="insonia"> Insônia</label>
-                        <label><input type="checkbox" name="perfil" value="estresse"> Estresse</label>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-primary">Finalizar Cadastro</button>
-            </form>
-            <button class="btn-link voltar-login">Já possuo uma conta</button>
-        </div>
-    </section>
-
-    <div id="app-shell" class="hidden">
-        
-        <aside class="sidebar">
-            <div class="sidebar-logo">🌿 Gênese</div>
-            <nav class="side-nav">
-                <button class="nav-item active" data-target="home">
-                    <span class="icon">🏠</span> Dashboard
-                </button>
-                <button class="nav-item" data-target="diario">
-                    <span class="icon">📝</span> Diário Terapêutico
-                </button>
-                <button class="nav-item" data-target="habitos">
-                    <span class="icon">📊</span> Rastreador de Hábitos
-                </button>
-                <button class="nav-item" data-target="biblioteca">
-                    <span class="icon">📚</span> Curadoria IA
-                </button>
-                <button class="nav-item" data-target="comunidade">
-                    <span class="icon">🤝</span> Círculos de Apoio
-                </button>
-                <button class="nav-item" data-target="metas">
-                    <span class="icon">🎯</span> Metas de Vida
-                </button>
-                <hr>
-                <div class="extra-features-label">Ferramentas de Evolução</div>
-                <button class="nav-item-small" title="Análise de Sonhos">🌙 Sonhos</button>
-                <button class="nav-item-small" title="Meditação Guiada">🧘 Meditar</button>
-                <button class="nav-item-small" title="Diário de Gratidão">✨ Gratidão</button>
-                <button class="nav-item-small" title="Foco Pomodoro">⏱️ Foco</button>
-                <button class="nav-item-small" title="Exercícios de Escrita">✍️ Escrita</button>
-                <button class="nav-item-small" title="Afirmações do Dia">🗣️ Afirmações</button>
-                <button class="nav-item-small" title="Planejador de Refeições">🍎 Nutrição</button>
-                <button class="nav-item-small" title="Monitor de Hidratação">💧 Água</button>
-                <button class="nav-item-small" title="Teste de Ansiedade">📈 Testes</button>
-                <button class="nav-item-small" title="Músicas Binaurais">🎧 Sounds</button>
-                <button class="nav-item-small" title="Diário de Cores">🎨 Arteterapia</button>
-                <button class="nav-item-small" title="Mapas Mentais">🧠 Mindmap</button>
-                <button class="nav-item-small" title="Controle Financeiro Emocional">💰 Finanças</button>
-                <button class="nav-item-small" title="Limpeza Mental">🧹 Declutter</button>
-                <button class="nav-item-small" title="Cápsula do Tempo">⏳ Cápsula</button>
-                <button class="nav-item-small" title="Treino Físico Leve">🏃 Movimento</button>
-                <button class="nav-item-small" title="Hobby Tracker">🎸 Hobbies</button>
-                <button class="nav-item-small" title="Social Detox">📱 Digital Detox</button>
-                <button class="nav-item-small" title="Carta para o Futuro">📩 Cartas</button>
-                <button class="nav-item-small" title="Mentor IA">🤖 Chat Mentor</button>
-            </nav>
-        </aside>
-
-        <header class="main-header">
+    <!-- ================================================================
+         DASHBOARD - HEADER PRINCIPAL
+    ================================================================ -->
+    <header class="hidden" id="main-header" role="banner">
+        <div class="header-content">
             <div class="header-left">
-                <h2 id="page-title">Bem-vindo, <span id="user-name-display">Viajante</span></h2>
+                <button id="toggle-sidebar" class="btn-icon" aria-label="Abrir menu lateral"><i data-lucide="menu"></i></button>
+                <div class="logo"><i data-lucide="leaf"></i> Genese</div>
+            </div>
+            <div class="user-stats">
+                <span id="streak-count" class="stat-badge" title="Dias consecutivos"><i data-lucide="flame"></i> <span>0 dias</span></span>
+                <span id="user-level" class="stat-badge" title="Seu nivel"><i data-lucide="award"></i> <span>Semente</span></span>
+                <span id="user-xp" class="stat-badge" title="Experiencia"><i data-lucide="star"></i> <span>0 XP</span></span>
             </div>
             <div class="header-right">
-                <div class="stats-pills">
-                    <span class="pill">🔥 <b id="streak-val">5</b> dias</span>
-                    <span class="pill">⭐ Nível <b id="level-val">12</b></span>
-                </div>
-                <button id="btn-historico" class="btn-icon" title="Histórico Completo">📜</button>
-                <button id="btn-jogos" class="btn-icon" title="Mini-jogos Relaxantes">🎮</button>
-                <button id="toggle-dark-mode" class="btn-icon">🌓</button>
-                <button id="logout-btn" class="btn-exit">Sair 🚪</button>
-            </div>
-        </header>
-
-        <main class="main-content">
-            
-            <section id="sec-home" class="view-section">
-                <div class="grid-dashboard">
-                    <div class="card glass entry-card">
-                        <h3>O que está na sua mente?</h3>
-                        <div class="mood-bar">
-                            <button class="mood-btn" data-mood="1">😢</button>
-                            <button class="mood-btn" data-mood="2">😐</button>
-                            <button class="mood-btn" data-mood="3">😊</button>
-                            <button class="mood-btn" data-mood="4">🤩</button>
+                <!-- Notificacoes (RF11 / Feature Extra 5) -->
+                <button id="btn-notificacoes" class="btn-icon notification-bell" aria-label="Notificacoes">
+                    <i data-lucide="bell"></i>
+                    <span class="notification-badge" id="notification-count">3</span>
+                </button>
+                <!-- Busca Global (Feature Extra 6) -->
+                <button id="btn-busca-global" class="btn-icon" aria-label="Buscar"><i data-lucide="search"></i></button>
+                <!-- Menu do Usuario -->
+                <div class="user-avatar-menu">
+                    <button id="btn-avatar" class="avatar-btn" aria-label="Menu do usuario" aria-haspopup="true" aria-expanded="false">
+                        <span class="avatar-initials" id="avatar-initials">U</span>
+                    </button>
+                    <div class="dropdown-menu hidden" id="user-dropdown" role="menu">
+                        <div class="dropdown-header">
+                            <span class="dropdown-name" id="dropdown-user-name">Usuario</span>
+                            <span class="dropdown-email" id="dropdown-user-email">email@exemplo.com</span>
                         </div>
-                        <textarea id="daily-entry" placeholder="Como foi seu dia? Identificou algum gatilho?"></textarea>
-                        <div class="entry-footer">
-                            <span id="char-count">0/1000</span>
-                            <button class="btn-primary-sm" id="save-entry">Salvar Relato</button>
-                        </div>
+                        <hr class="dropdown-divider">
+                        <a href="#" class="dropdown-item" data-target="perfil" role="menuitem"><i data-lucide="user"></i> Meu Perfil</a>
+                        <a href="#" class="dropdown-item" data-target="configuracoes" role="menuitem"><i data-lucide="settings"></i> Configuracoes</a>
+                        <a href="#" class="dropdown-item" data-target="privacidade-dados" role="menuitem"><i data-lucide="shield"></i> Privacidade (LGPD)</a>
+                        <hr class="dropdown-divider">
+                        <a href="#" class="dropdown-item dropdown-item--danger" id="logout-btn" role="menuitem"><i data-lucide="log-out"></i> Sair</a>
                     </div>
-
-                    <div class="card glass ai-feedback-card">
-                        <h3><span class="sparkle">✨</span> Insight da Gênese</h3>
-                        <div id="ai-content-loader" class="hidden">Analisando sentimentos...</div>
-                        <div id="ai-response">
-                            <p class="placeholder-text">Escreva seu relato para que nossa IA possa analisar possíveis distorções cognitivas e sugerir caminhos.</p>
-                        </div>
-                        <div class="ai-recommendation hidden" id="media-rec">
-                            <h4>🎬 Recomendação para hoje:</h4>
-                            <p id="rec-text"></p>
-                        </div>
-                    </div>
-
-                    <div class="card glass habit-mini-tracker">
-                        <h3>Check-list de Equilíbrio</h3>
-                        <div class="habit-item">
-                            <input type="checkbox" id="h-sono"> <label>Dormiu +7h?</label>
-                        </div>
-                        <div class="habit-item">
-                            <input type="checkbox" id="h-agua"> <label>Bebeu 2L de água?</label>
-                        </div>
-                        <div class="habit-item">
-                            <input type="checkbox" id="h-medita"> <label>Meditação Diária?</label>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="sec-jogos" class="view-section hidden">
-                <div class="card glass">
-                    <h2>Espaço de Descompressão</h2>
-                    <div class="game-grid">
-                        <div class="game-unit" id="game-bubbles">
-                            <h4>Estourar Bolhas</h4>
-                            <canvas id="canvas-bubbles"></canvas>
-                        </div>
-                        <div class="game-unit" id="game-zen-garden">
-                            <h4>Jardim Zen</h4>
-                            <div class="placeholder-game">Arraste a areia...</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="sec-historico" class="view-section hidden">
-                <div class="card glass">
-                    <div class="header-flex">
-                        <h2>Sua Linha do Tempo</h2>
-                        <button class="btn-secondary" id="export-pdf">Exportar PDF para Terapeuta</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Humor</th>
-                                    <th>Análise IA</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-body">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <aside class="right-widgets">
-            <div class="widget-card insigneas-box">
-                <h4>Conquistas (RF07)</h4>
-                <div class="badge-grid">
-                    <div class="badge locked" title="7 dias seguidos">🔥</div>
-                    <div class="badge locked" title="Primeiro desabafo">📝</div>
-                    <div class="badge locked" title="Mestre da Calma">🧘</div>
                 </div>
             </div>
-            
-            <div class="widget-card notification-center">
-                <h4>Lembretes</h4>
-                <ul id="notif-list">
-                    <li>💧 Hora de beber água!</li>
-                    <li>🧘 Que tal 5 min de respiração?</li>
+        </div>
+    </header>
+
+    <!-- SIDEBAR NAVIGATION (Feature Extra 4) -->
+    <nav id="sidebar" class="sidebar hidden" role="navigation" aria-label="Menu principal">
+        <div class="sidebar-header">
+            <div class="sidebar-brand"><i data-lucide="leaf"></i><span>Genese do Equilibrio</span></div>
+            <button id="close-sidebar" class="btn-icon" aria-label="Fechar menu"><i data-lucide="x"></i></button>
+        </div>
+        <ul class="sidebar-nav" role="menubar">
+            <li class="nav-section-title">Principal</li>
+            <li><button class="sidebar-btn active" data-target="dashboard-home" role="menuitem"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></button></li>
+            <li><button class="sidebar-btn" data-target="diario" role="menuitem"><i data-lucide="book-open"></i><span>Diario</span></button></li>
+            <li><button class="sidebar-btn" data-target="historico" role="menuitem"><i data-lucide="history"></i><span>Historico</span></button></li>
+            <li><button class="sidebar-btn" data-target="gratidao" role="menuitem"><i data-lucide="heart"></i><span>Gratidao</span></button></li>
+            <li class="nav-section-title">Bem-Estar</li>
+            <li><button class="sidebar-btn" data-target="habitos" role="menuitem"><i data-lucide="check-square"></i><span>Rastreador de Habitos</span></button></li>
+            <li><button class="sidebar-btn" data-target="meditacao" role="menuitem"><i data-lucide="cloud"></i><span>Meditacao</span></button></li>
+            <li><button class="sidebar-btn" data-target="sono" role="menuitem"><i data-lucide="moon"></i><span>Qualidade do Sono</span></button></li>
+            <li><button class="sidebar-btn" data-target="metas" role="menuitem"><i data-lucide="target"></i><span>Metas Pessoais</span></button></li>
+            <li class="nav-section-title">Conteudo</li>
+            <li><button class="sidebar-btn" data-target="curadoria" role="menuitem"><i data-lucide="book-marked"></i><span>Curadoria de Midia</span></button></li>
+            <li><button class="sidebar-btn" data-target="psicoeducacao" role="menuitem"><i data-lucide="graduation-cap"></i><span>Psicoeducacao</span></button></li>
+            <li><button class="sidebar-btn" data-target="afirmacoes" role="menuitem"><i data-lucide="sparkles"></i><span>Afirmacoes</span></button></li>
+            <li class="nav-section-title">Social</li>
+            <li><button class="sidebar-btn" data-target="comunidade" role="menuitem"><i data-lucide="users"></i><span>Comunidade</span></button></li>
+            <li><button class="sidebar-btn" data-target="conquistas" role="menuitem"><i data-lucide="trophy"></i><span>Conquistas</span></button></li>
+            <li class="nav-section-title">Diversao</li>
+            <li><button class="sidebar-btn" data-target="jogos" role="menuitem"><i data-lucide="gamepad-2"></i><span>Jogos Relax</span></button></li>
+            <li><button class="sidebar-btn" data-target="musica" role="menuitem"><i data-lucide="music"></i><span>Musicoterapia</span></button></li>
+            <li class="nav-section-title">Relatorios</li>
+            <li><button class="sidebar-btn" data-target="relatorios" role="menuitem"><i data-lucide="bar-chart-3"></i><span>Relatorio Semanal</span></button></li>
+            <li><button class="sidebar-btn" data-target="calendario" role="menuitem"><i data-lucide="calendar-days"></i><span>Calendario</span></button></li>
+            <li><button class="sidebar-btn" data-target="exportar" role="menuitem"><i data-lucide="download"></i><span>Exportar Dados</span></button></li>
+        </ul>
+    </nav>
+    <div id="sidebar-overlay" class="sidebar-overlay hidden"></div>
+
+    <!-- BUSCA GLOBAL (Feature Extra 6) -->
+    <div id="modal-busca" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="busca-title">
+        <div class="modal-card modal-card--wide glass-card">
+            <div class="search-bar-container">
+                <i data-lucide="search"></i>
+                <input type="search" id="input-busca-global" placeholder="Buscar em todo o app..." autofocus aria-label="Buscar">
+                <kbd>ESC</kbd>
+            </div>
+            <div class="search-results" id="search-results">
+                <p class="search-hint">Digite para buscar em diarios, habitos, metas e mais...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAINEL DE NOTIFICACOES (RF11 / Feature Extra 5) -->
+    <aside id="painel-notificacoes" class="notification-panel hidden" role="complementary" aria-label="Notificacoes">
+        <div class="panel-content glass-card">
+            <div class="panel-header">
+                <h3><i data-lucide="bell"></i> Notificacoes</h3>
+                <button id="close-notificacoes" class="btn-icon" aria-label="Fechar"><i data-lucide="x"></i></button>
+            </div>
+            <div class="notification-list" id="notification-list">
+                <div class="notification-item unread">
+                    <div class="notification-icon"><i data-lucide="flame"></i></div>
+                    <div class="notification-body">
+                        <p class="notification-text">Voce esta no dia <strong>3</strong> da sua ofensiva!</p>
+                        <span class="notification-time">Agora</span>
+                    </div>
+                </div>
+                <div class="notification-item unread">
+                    <div class="notification-icon"><i data-lucide="book-open"></i></div>
+                    <div class="notification-body">
+                        <p class="notification-text">Hora de escrever no seu diario. Nao quebre a ofensiva!</p>
+                        <span class="notification-time">2h atras</span>
+                    </div>
+                </div>
+                <div class="notification-item">
+                    <div class="notification-icon"><i data-lucide="trophy"></i></div>
+                    <div class="notification-body">
+                        <p class="notification-text">Nova conquista desbloqueada: <strong>Escritor</strong></p>
+                        <span class="notification-time">Ontem</span>
+                    </div>
+                </div>
+            </div>
+            <div class="notification-actions">
+                <button class="btn-link" id="btn-marcar-lidas">Marcar todas como lidas</button>
+                <a href="#" class="btn-link" data-target="configuracoes-notificacoes">Configurar</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ================================================================
+         CONTEUDO PRINCIPAL
+    ================================================================ -->
+    <main id="conteudo-principal" class="hidden container" role="main">
+
+        <!-- DASHBOARD HOME (Feature Extra 7) -->
+        <section id="dashboard-home" class="content-section animate-in">
+            <div class="welcome-box">
+                <h2>Ola, <span id="user-display-name">Viajante</span></h2>
+                <p>Aqui esta um resumo do seu progresso hoje.</p>
+            </div>
+            <div class="dashboard-grid">
+                <div class="dash-card glass-card">
+                    <div class="dash-card-icon"><i data-lucide="flame"></i></div>
+                    <div class="dash-card-info">
+                        <span class="dash-card-value" id="dash-streak">0</span>
+                        <span class="dash-card-label">Dias de Ofensiva</span>
+                    </div>
+                </div>
+                <div class="dash-card glass-card">
+                    <div class="dash-card-icon"><i data-lucide="book-open"></i></div>
+                    <div class="dash-card-info">
+                        <span class="dash-card-value" id="dash-entries">0</span>
+                        <span class="dash-card-label">Relatos Escritos</span>
+                    </div>
+                </div>
+                <div class="dash-card glass-card">
+                    <div class="dash-card-icon"><i data-lucide="star"></i></div>
+                    <div class="dash-card-info">
+                        <span class="dash-card-value" id="dash-xp">0</span>
+                        <span class="dash-card-label">Pontos de XP</span>
+                    </div>
+                </div>
+                <div class="dash-card glass-card">
+                    <div class="dash-card-icon"><i data-lucide="trophy"></i></div>
+                    <div class="dash-card-info">
+                        <span class="dash-card-value" id="dash-badges">0</span>
+                        <span class="dash-card-label">Insignias</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Grafico de Humor Semanal (Feature Extra 8) -->
+            <div class="chart-container glass-card">
+                <h3><i data-lucide="trending-up"></i> Humor da Semana</h3>
+                <div class="mood-chart" id="mood-chart" role="img" aria-label="Grafico de humor semanal">
+                    <div class="chart-bar" data-day="Seg" style="--bar-height: 60%"><span class="chart-label">Seg</span></div>
+                    <div class="chart-bar" data-day="Ter" style="--bar-height: 80%"><span class="chart-label">Ter</span></div>
+                    <div class="chart-bar" data-day="Qua" style="--bar-height: 40%"><span class="chart-label">Qua</span></div>
+                    <div class="chart-bar" data-day="Qui" style="--bar-height: 70%"><span class="chart-label">Qui</span></div>
+                    <div class="chart-bar" data-day="Sex" style="--bar-height: 90%"><span class="chart-label">Sex</span></div>
+                    <div class="chart-bar" data-day="Sab" style="--bar-height: 50%"><span class="chart-label">Sab</span></div>
+                    <div class="chart-bar" data-day="Dom" style="--bar-height: 75%"><span class="chart-label">Dom</span></div>
+                </div>
+            </div>
+            <!-- Afirmacao do Dia (Feature Extra 9) -->
+            <div class="affirmation-card glass-card">
+                <i data-lucide="sparkles"></i>
+                <blockquote id="afirmacao-dia">
+                    "Voce merece compaixao, especialmente de si mesmo."
+                </blockquote>
+                <button class="btn-link" id="btn-nova-afirmacao"><i data-lucide="refresh-cw"></i> Nova afirmacao</button>
+            </div>
+        </section>
+
+        <!-- DIARIO TERAPEUTICO (RF02 / RF03 / RF05) -->
+        <section id="diario" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="book-open"></i> Diario Terapeutico</h2>
+                <p>Como esta seu coracao hoje? Desabafe sem medo.</p>
+            </div>
+            <div class="mood-selector" role="radiogroup" aria-label="Selecione seu humor">
+                <button class="btn-mood" data-mood="Radiante" aria-label="Radiante"><span class="mood-emoji">&#129321;</span><span class="mood-label">Radiante</span></button>
+                <button class="btn-mood" data-mood="Bem" aria-label="Bem"><span class="mood-emoji">&#128522;</span><span class="mood-label">Bem</span></button>
+                <button class="btn-mood" data-mood="Neutro" aria-label="Neutro"><span class="mood-emoji">&#128528;</span><span class="mood-label">Neutro</span></button>
+                <button class="btn-mood" data-mood="Triste" aria-label="Triste"><span class="mood-emoji">&#128532;</span><span class="mood-label">Triste</span></button>
+                <button class="btn-mood" data-mood="Ansioso" aria-label="Ansioso"><span class="mood-emoji">&#128560;</span><span class="mood-label">Ansioso</span></button>
+            </div>
+            <form id="form-diario" class="glass-card">
+                <div class="input-container">
+                    <label for="relato-diario"><i data-lucide="pen-line"></i> Seu relato de hoje</label>
+                    <textarea id="relato-diario" required placeholder="Escreva livremente sobre como foi seu dia, seus sentimentos, pensamentos..." rows="8"></textarea>
+                    <div class="textarea-footer">
+                        <span class="char-count"><span id="char-count">0</span>/2000</span>
+                        <div class="text-tools">
+                            <button type="button" class="btn-icon btn-tool" title="Gravar audio" aria-label="Gravar audio"><i data-lucide="mic"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tags de Emocao (Feature Extra 10) -->
+                <div class="emotion-tags-input">
+                    <label><i data-lucide="tags"></i> Tags de emocao</label>
+                    <div class="tags-container" id="emotion-tags">
+                        <span class="tag">Gratidao <button class="tag-remove" aria-label="Remover tag">&times;</button></span>
+                    </div>
+                    <input type="text" id="input-emotion-tag" placeholder="Adicione uma tag e pressione Enter" class="tag-input">
+                </div>
+                <div class="security-box">
+                    <label for="pin-acesso"><i data-lucide="shield"></i> PIN de Seguranca</label>
+                    <input type="password" id="pin-acesso" required maxlength="4" inputmode="numeric" placeholder="****">
+                </div>
+                <button type="submit" class="btn-primary btn-full"><i data-lucide="save"></i> Salvar Momento</button>
+            </form>
+            <!-- Feedback da IA (RF03) -->
+            <div id="ia-feedback" class="hidden feedback-card glass-card">
+                <div class="feedback-header"><i data-lucide="brain"></i><h4>Analise da IA</h4></div>
+                <p id="texto-analise"></p>
+                <div class="feedback-suggestion">
+                    <i data-lucide="book-marked"></i>
+                    <small id="texto-livro"></small>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORICO DE RELATOS (RF02) -->
+        <section id="historico" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="history"></i> Historico de Relatos</h2>
+                <div class="section-actions">
+                    <div class="filter-group">
+                        <select id="filtro-humor" class="select-styled select-small" aria-label="Filtrar por humor">
+                            <option value="">Todos os humores</option>
+                            <option value="Radiante">Radiante</option>
+                            <option value="Bem">Bem</option>
+                            <option value="Neutro">Neutro</option>
+                            <option value="Triste">Triste</option>
+                            <option value="Ansioso">Ansioso</option>
+                        </select>
+                        <input type="date" id="filtro-data" class="input-small" aria-label="Filtrar por data">
+                    </div>
+                </div>
+            </div>
+            <div class="tabela-box glass-card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Humor</th>
+                                <th>Resumo</th>
+                                <th>Tags</th>
+                                <th>Acao</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-historico"></tbody>
+                    </table>
+                </div>
+                <div class="table-pagination" id="historico-pagination">
+                    <button class="btn-icon" id="btn-prev-page" aria-label="Pagina anterior"><i data-lucide="chevron-left"></i></button>
+                    <span id="pagina-atual">1 / 1</span>
+                    <button class="btn-icon" id="btn-next-page" aria-label="Proxima pagina"><i data-lucide="chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIARIO DE GRATIDAO (Feature Extra 11) -->
+        <section id="gratidao" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="heart"></i> Diario de Gratidao</h2>
+                <p>Registre 3 coisas pelas quais voce e grato(a) hoje.</p>
+            </div>
+            <form id="form-gratidao" class="glass-card">
+                <div class="gratitude-inputs">
+                    <div class="gratitude-item">
+                        <span class="gratitude-number">1</span>
+                        <input type="text" name="gratidao-1" placeholder="Sou grato(a) por..." required>
+                    </div>
+                    <div class="gratitude-item">
+                        <span class="gratitude-number">2</span>
+                        <input type="text" name="gratidao-2" placeholder="Sou grato(a) por..." required>
+                    </div>
+                    <div class="gratitude-item">
+                        <span class="gratitude-number">3</span>
+                        <input type="text" name="gratidao-3" placeholder="Sou grato(a) por..." required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-full"><i data-lucide="heart"></i> Salvar Gratidao</button>
+            </form>
+            <div class="gratitude-history glass-card">
+                <h3>Gratidoes Anteriores</h3>
+                <div id="lista-gratidao" class="gratitude-list"></div>
+            </div>
+        </section>
+
+        <!-- RASTREADOR DE HABITOS (RF09) -->
+        <section id="habitos" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="check-square"></i> Rastreador de Habitos</h2>
+                <button class="btn-secondary" id="btn-add-habito"><i data-lucide="plus"></i> Novo Habito</button>
+            </div>
+            <div class="habits-grid" id="habits-grid">
+                <div class="habit-card glass-card">
+                    <div class="habit-header">
+                        <span class="habit-icon">&#128564;</span>
+                        <h4>Sono (8h)</h4>
+                        <span class="habit-streak"><i data-lucide="flame"></i> 5</span>
+                    </div>
+                    <div class="habit-week">
+                        <span class="habit-day done" title="Segunda">S</span>
+                        <span class="habit-day done" title="Terca">T</span>
+                        <span class="habit-day done" title="Quarta">Q</span>
+                        <span class="habit-day" title="Quinta">Q</span>
+                        <span class="habit-day done" title="Sexta">S</span>
+                        <span class="habit-day" title="Sabado">S</span>
+                        <span class="habit-day" title="Domingo">D</span>
+                    </div>
+                    <div class="habit-progress"><div class="progress-bar" style="--progress: 71%"></div><span>5/7 dias</span></div>
+                </div>
+                <div class="habit-card glass-card">
+                    <div class="habit-header">
+                        <span class="habit-icon">&#128167;</span>
+                        <h4>Agua (2L)</h4>
+                        <span class="habit-streak"><i data-lucide="flame"></i> 3</span>
+                    </div>
+                    <div class="habit-week">
+                        <span class="habit-day done">S</span>
+                        <span class="habit-day done">T</span>
+                        <span class="habit-day">Q</span>
+                        <span class="habit-day done">Q</span>
+                        <span class="habit-day">S</span>
+                        <span class="habit-day">S</span>
+                        <span class="habit-day">D</span>
+                    </div>
+                    <div class="habit-progress"><div class="progress-bar" style="--progress: 43%"></div><span>3/7 dias</span></div>
+                </div>
+                <div class="habit-card glass-card">
+                    <div class="habit-header">
+                        <span class="habit-icon">&#129504;</span>
+                        <h4>Meditacao (10min)</h4>
+                        <span class="habit-streak"><i data-lucide="flame"></i> 2</span>
+                    </div>
+                    <div class="habit-week">
+                        <span class="habit-day done">S</span>
+                        <span class="habit-day">T</span>
+                        <span class="habit-day done">Q</span>
+                        <span class="habit-day">Q</span>
+                        <span class="habit-day">S</span>
+                        <span class="habit-day">S</span>
+                        <span class="habit-day">D</span>
+                    </div>
+                    <div class="habit-progress"><div class="progress-bar" style="--progress: 29%"></div><span>2/7 dias</span></div>
+                </div>
+            </div>
+            <!-- Modal Adicionar Habito -->
+            <div id="modal-habito" class="modal-overlay hidden" role="dialog" aria-modal="true">
+                <div class="modal-card glass-card">
+                    <h3>Novo Habito</h3>
+                    <form id="form-novo-habito">
+                        <div class="input-container">
+                            <label for="habito-nome">Nome do Habito</label>
+                            <input type="text" id="habito-nome" required placeholder="Ex: Ler 20 paginas">
+                        </div>
+                        <div class="input-container">
+                            <label for="habito-icone">Emoji/Icone</label>
+                            <input type="text" id="habito-icone" placeholder="Ex: &#128214;" maxlength="2">
+                        </div>
+                        <div class="input-container">
+                            <label for="habito-frequencia">Frequencia</label>
+                            <select id="habito-frequencia" class="select-styled">
+                                <option value="diario">Diario</option>
+                                <option value="semanal">Semanal</option>
+                                <option value="personalizado">Personalizado</option>
+                            </select>
+                        </div>
+                        <div class="step-actions step-actions--split">
+                            <button type="button" class="btn-secondary" id="btn-cancelar-habito">Cancelar</button>
+                            <button type="submit" class="btn-primary"><i data-lucide="plus"></i> Adicionar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEDITACAO E MINDFULNESS (Feature Extra 12) -->
+        <section id="meditacao" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="cloud"></i> Meditacao e Mindfulness</h2>
+                <p>Encontre paz interior com sessoes guiadas.</p>
+            </div>
+            <div class="meditation-grid">
+                <div class="meditation-card glass-card" data-duration="5">
+                    <div class="meditation-visual"><i data-lucide="wind"></i></div>
+                    <h4>Respiracao Consciente</h4>
+                    <span class="meditation-duration">5 min</span>
+                    <p>Tecnica 4-7-8 para acalmar a mente.</p>
+                    <button class="btn-primary btn-full btn-start-meditation">Iniciar</button>
+                </div>
+                <div class="meditation-card glass-card" data-duration="10">
+                    <div class="meditation-visual"><i data-lucide="scan"></i></div>
+                    <h4>Body Scan</h4>
+                    <span class="meditation-duration">10 min</span>
+                    <p>Escaneie seu corpo e libere tensoes.</p>
+                    <button class="btn-primary btn-full btn-start-meditation">Iniciar</button>
+                </div>
+                <div class="meditation-card glass-card" data-duration="15">
+                    <div class="meditation-visual"><i data-lucide="eye"></i></div>
+                    <h4>Visualizacao Criativa</h4>
+                    <span class="meditation-duration">15 min</span>
+                    <p>Imagine seu lugar seguro e tranquilo.</p>
+                    <button class="btn-primary btn-full btn-start-meditation">Iniciar</button>
+                </div>
+                <div class="meditation-card glass-card" data-duration="20">
+                    <div class="meditation-visual"><i data-lucide="heart-handshake"></i></div>
+                    <h4>Autocompaixao</h4>
+                    <span class="meditation-duration">20 min</span>
+                    <p>Pratique bondade consigo mesmo.</p>
+                    <button class="btn-primary btn-full btn-start-meditation">Iniciar</button>
+                </div>
+            </div>
+            <!-- Timer de Meditacao -->
+            <div id="meditation-timer" class="meditation-timer hidden glass-card">
+                <h3 id="meditation-title">Respiracao Consciente</h3>
+                <div class="timer-circle">
+                    <svg viewBox="0 0 200 200"><circle class="timer-bg" cx="100" cy="100" r="90"/><circle class="timer-progress" cx="100" cy="100" r="90"/></svg>
+                    <span class="timer-display" id="timer-display">5:00</span>
+                </div>
+                <p class="timer-instruction" id="timer-instruction">Inspire... 4 segundos</p>
+                <div class="timer-controls">
+                    <button class="btn-icon" id="btn-pause-meditation" aria-label="Pausar"><i data-lucide="pause"></i></button>
+                    <button class="btn-secondary" id="btn-stop-meditation"><i data-lucide="square"></i> Encerrar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUALIDADE DO SONO (Feature Extra 13) -->
+        <section id="sono" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="moon"></i> Rastreador de Sono</h2>
+                <p>Registre e melhore a qualidade do seu sono.</p>
+            </div>
+            <form id="form-sono" class="glass-card">
+                <div class="input-group-row">
+                    <div class="input-container">
+                        <label for="sono-hora-dormir"><i data-lucide="sunset"></i> Hora de Dormir</label>
+                        <input type="time" id="sono-hora-dormir" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="sono-hora-acordar"><i data-lucide="sunrise"></i> Hora de Acordar</label>
+                        <input type="time" id="sono-hora-acordar" required>
+                    </div>
+                </div>
+                <div class="input-container">
+                    <label>Qualidade do Sono</label>
+                    <div class="rating-stars" role="radiogroup" aria-label="Qualidade do sono">
+                        <button type="button" class="star-btn" data-rating="1" aria-label="1 estrela"><i data-lucide="star"></i></button>
+                        <button type="button" class="star-btn" data-rating="2" aria-label="2 estrelas"><i data-lucide="star"></i></button>
+                        <button type="button" class="star-btn" data-rating="3" aria-label="3 estrelas"><i data-lucide="star"></i></button>
+                        <button type="button" class="star-btn" data-rating="4" aria-label="4 estrelas"><i data-lucide="star"></i></button>
+                        <button type="button" class="star-btn" data-rating="5" aria-label="5 estrelas"><i data-lucide="star"></i></button>
+                    </div>
+                </div>
+                <div class="input-container">
+                    <label for="sono-notas">Notas (sonhos, interrupcoes...)</label>
+                    <textarea id="sono-notas" rows="3" placeholder="Alguma observacao sobre seu sono?"></textarea>
+                </div>
+                <button type="submit" class="btn-primary btn-full"><i data-lucide="save"></i> Registrar Sono</button>
+            </form>
+            <div class="sleep-history glass-card">
+                <h3>Historico de Sono</h3>
+                <div id="sono-historico" class="sleep-chart"></div>
+            </div>
+        </section>
+
+        <!-- METAS PESSOAIS (Feature Extra 14) -->
+        <section id="metas" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="target"></i> Metas Pessoais</h2>
+                <button class="btn-secondary" id="btn-add-meta"><i data-lucide="plus"></i> Nova Meta</button>
+            </div>
+            <div class="goals-list" id="goals-list">
+                <div class="goal-card glass-card">
+                    <div class="goal-header">
+                        <h4>Meditar 30 dias seguidos</h4>
+                        <span class="goal-category">Bem-estar</span>
+                    </div>
+                    <div class="goal-progress">
+                        <div class="progress-bar-labeled">
+                            <div class="progress-fill" style="--progress: 40%"></div>
+                        </div>
+                        <span class="goal-progress-text">12/30 dias</span>
+                    </div>
+                    <div class="goal-footer">
+                        <span class="goal-deadline"><i data-lucide="calendar"></i> Prazo: 30 dias</span>
+                        <div class="goal-actions">
+                            <button class="btn-icon" title="Editar" aria-label="Editar meta"><i data-lucide="edit-3"></i></button>
+                            <button class="btn-icon" title="Concluir" aria-label="Concluir meta"><i data-lucide="check"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CURADORIA DE MIDIA VIA IA (RF08) -->
+        <section id="curadoria" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="book-marked"></i> Curadoria de Midia</h2>
+                <p>Recomendacoes personalizadas baseadas no seu humor.</p>
+            </div>
+            <div class="media-tabs" role="tablist">
+                <button class="tab-btn active" role="tab" data-tab="livros" aria-selected="true">Livros</button>
+                <button class="tab-btn" role="tab" data-tab="filmes">Filmes</button>
+                <button class="tab-btn" role="tab" data-tab="podcasts">Podcasts</button>
+                <button class="tab-btn" role="tab" data-tab="artigos">Artigos</button>
+            </div>
+            <div class="media-grid" id="media-grid">
+                <div class="media-card glass-card">
+                    <div class="media-cover"><i data-lucide="book"></i></div>
+                    <div class="media-info">
+                        <h4>O Poder do Habito</h4>
+                        <p class="media-author">Charles Duhigg</p>
+                        <div class="media-rating"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+                        <span class="media-tag">Habitos</span>
+                    </div>
+                </div>
+                <div class="media-card glass-card">
+                    <div class="media-cover"><i data-lucide="book"></i></div>
+                    <div class="media-info">
+                        <h4>Ansiedade: Como Enfrentar</h4>
+                        <p class="media-author">Augusto Cury</p>
+                        <div class="media-rating"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+                        <span class="media-tag">Ansiedade</span>
+                    </div>
+                </div>
+                <div class="media-card glass-card">
+                    <div class="media-cover"><i data-lucide="book"></i></div>
+                    <div class="media-info">
+                        <h4>Minimalismo Digital</h4>
+                        <p class="media-author">Cal Newport</p>
+                        <div class="media-rating"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+                        <span class="media-tag">Foco</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Quiz da IA (RF08) -->
+            <div class="quiz-section glass-card">
+                <h3><i data-lucide="help-circle"></i> Quiz de Conhecimento</h3>
+                <p>Teste o que voce aprendeu com as recomendacoes!</p>
+                <div id="quiz-container">
+                    <div class="quiz-question">
+                        <p id="quiz-pergunta">Qual e o primeiro passo para mudar um habito segundo Charles Duhigg?</p>
+                        <div class="quiz-options" role="radiogroup">
+                            <label class="quiz-option"><input type="radio" name="quiz" value="a"> <span>Identificar a deixa</span></label>
+                            <label class="quiz-option"><input type="radio" name="quiz" value="b"> <span>Eliminar o habito</span></label>
+                            <label class="quiz-option"><input type="radio" name="quiz" value="c"> <span>Criar uma recompensa</span></label>
+                            <label class="quiz-option"><input type="radio" name="quiz" value="d"> <span>Ignorar o comportamento</span></label>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="btn-responder-quiz"><i data-lucide="check"></i> Responder</button>
+                    <div id="quiz-resultado" class="hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PSICOEDUCACAO (Feature Extra 15) -->
+        <section id="psicoeducacao" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="graduation-cap"></i> Modulos de Psicoeducacao</h2>
+                <p>Aprenda sobre TCC, Psicologia Positiva e mais.</p>
+            </div>
+            <div class="modules-grid">
+                <div class="module-card glass-card">
+                    <div class="module-progress-ring"><svg viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="16"/><circle class="ring-fill" cx="18" cy="18" r="16" style="--progress: 75"/></svg><span>75%</span></div>
+                    <h4>Distorcoes Cognitivas</h4>
+                    <p>Aprenda a identificar padroes de pensamento nocivos.</p>
+                    <span class="module-lessons">6/8 licoes</span>
+                    <button class="btn-primary btn-full">Continuar</button>
+                </div>
+                <div class="module-card glass-card">
+                    <div class="module-progress-ring"><svg viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="16"/><circle class="ring-fill" cx="18" cy="18" r="16" style="--progress: 30"/></svg><span>30%</span></div>
+                    <h4>Regulacao Emocional</h4>
+                    <p>Tecnicas para gerenciar emocoes intensas.</p>
+                    <span class="module-lessons">3/10 licoes</span>
+                    <button class="btn-primary btn-full">Continuar</button>
+                </div>
+                <div class="module-card glass-card">
+                    <div class="module-progress-ring"><svg viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="16"/><circle class="ring-fill" cx="18" cy="18" r="16" style="--progress: 0"/></svg><span>0%</span></div>
+                    <h4>Psicologia Positiva</h4>
+                    <p>Fortaleca virtudes e construa resiliencia.</p>
+                    <span class="module-lessons">0/12 licoes</span>
+                    <button class="btn-primary btn-full">Comecar</button>
+                </div>
+                <div class="module-card glass-card">
+                    <div class="module-progress-ring"><svg viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="16"/><circle class="ring-fill" cx="18" cy="18" r="16" style="--progress: 100"/></svg><span>100%</span></div>
+                    <h4>Autocompaixao</h4>
+                    <p>Aprenda a ser gentil consigo mesmo.</p>
+                    <span class="module-lessons">5/5 licoes</span>
+                    <button class="btn-secondary btn-full">Revisar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- AFIRMACOES POSITIVAS (Feature Extra 9/16) -->
+        <section id="afirmacoes" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="sparkles"></i> Afirmacoes Positivas</h2>
+                <p>Repita frases poderosas para reprogramar sua mente.</p>
+            </div>
+            <div class="affirmation-carousel glass-card">
+                <button class="btn-icon carousel-prev" aria-label="Anterior"><i data-lucide="chevron-left"></i></button>
+                <div class="affirmation-slide">
+                    <blockquote id="affirmation-text">"Eu sou capaz de superar qualquer desafio que a vida me apresenta."</blockquote>
+                    <div class="affirmation-actions">
+                        <button class="btn-icon" title="Favoritar" aria-label="Favoritar"><i data-lucide="heart"></i></button>
+                        <button class="btn-icon" title="Compartilhar" aria-label="Compartilhar"><i data-lucide="share-2"></i></button>
+                        <button class="btn-icon" title="Copiar" aria-label="Copiar"><i data-lucide="copy"></i></button>
+                    </div>
+                </div>
+                <button class="btn-icon carousel-next" aria-label="Proximo"><i data-lucide="chevron-right"></i></button>
+            </div>
+            <form id="form-afirmacao-custom" class="glass-card">
+                <h4>Crie sua propria afirmacao</h4>
+                <div class="input-container">
+                    <input type="text" id="input-afirmacao" placeholder="Eu sou..." required>
+                </div>
+                <button type="submit" class="btn-primary"><i data-lucide="plus"></i> Adicionar</button>
+            </form>
+        </section>
+
+        <!-- COMUNIDADE ANONIMA (Feature Extra 17) -->
+        <section id="comunidade" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="users"></i> Comunidade de Apoio</h2>
+                <p>Compartilhe anonimamente e apoie outros viajantes.</p>
+            </div>
+            <form id="form-post-comunidade" class="glass-card">
+                <textarea id="post-comunidade-texto" rows="3" placeholder="Compartilhe algo com a comunidade (anonimo)..." required></textarea>
+                <div class="step-actions step-actions--split">
+                    <div class="post-tags">
+                        <label class="tag-chip tag-chip--small"><input type="checkbox" name="post-tag" value="motivacao"> <span>Motivacao</span></label>
+                        <label class="tag-chip tag-chip--small"><input type="checkbox" name="post-tag" value="desabafo"> <span>Desabafo</span></label>
+                        <label class="tag-chip tag-chip--small"><input type="checkbox" name="post-tag" value="dica"> <span>Dica</span></label>
+                    </div>
+                    <button type="submit" class="btn-primary"><i data-lucide="send"></i> Publicar</button>
+                </div>
+            </form>
+            <div class="community-feed" id="community-feed">
+                <article class="community-post glass-card">
+                    <div class="post-header">
+                        <span class="post-avatar">&#127793;</span>
+                        <div><strong>Viajante Anonimo</strong><span class="post-time">2h atras</span></div>
+                    </div>
+                    <p>Hoje consegui sair de casa depois de 3 dias. Pequenas vitorias importam.</p>
+                    <div class="post-tags-display"><span class="tag-small">Motivacao</span></div>
+                    <div class="post-actions">
+                        <button class="btn-reaction"><i data-lucide="heart"></i> <span>24</span></button>
+                        <button class="btn-reaction"><i data-lucide="message-circle"></i> <span>5</span></button>
+                        <button class="btn-reaction"><i data-lucide="hand-heart"></i> <span>Apoiar</span></button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- CONQUISTAS E INSIGNIAS (RF06 / RF07) -->
+        <section id="conquistas" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="trophy"></i> Conquistas e Insignias</h2>
+                <p>Acompanhe sua evolucao e desbloqueie recompensas.</p>
+            </div>
+            <div class="achievements-stats glass-card">
+                <div class="stat-item"><span class="stat-value" id="total-xp">0</span><span class="stat-label">XP Total</span></div>
+                <div class="stat-item"><span class="stat-value" id="total-badges">0</span><span class="stat-label">Insignias</span></div>
+                <div class="stat-item"><span class="stat-value" id="max-streak">0</span><span class="stat-label">Maior Ofensiva</span></div>
+                <div class="stat-item"><span class="stat-value" id="current-level">Semente</span><span class="stat-label">Nivel Atual</span></div>
+            </div>
+            <h3>Insignias</h3>
+            <div class="badges-grid" id="badges-container">
+                <div class="badge-card glass-card unlocked"><span class="badge-icon">&#128035;</span><h5>Recem-chegado</h5><p>Criou sua conta</p></div>
+                <div class="badge-card glass-card unlocked"><span class="badge-icon">&#128221;</span><h5>Escritor</h5><p>1 relato escrito</p></div>
+                <div class="badge-card glass-card locked"><span class="badge-icon">&#128170;</span><h5>Persistente</h5><p>30 XP acumulados</p></div>
+                <div class="badge-card glass-card locked"><span class="badge-icon">&#128081;</span><h5>Constancia</h5><p>7 dias de ofensiva</p></div>
+                <div class="badge-card glass-card locked"><span class="badge-icon">&#127775;</span><h5>Mestre Zen</h5><p>10 meditacoes</p></div>
+                <div class="badge-card glass-card locked"><span class="badge-icon">&#128218;</span><h5>Leitor Voraz</h5><p>5 livros completados</p></div>
+            </div>
+            <h3>Linha do Tempo</h3>
+            <div class="timeline" id="achievement-timeline">
+                <div class="timeline-item"><div class="timeline-marker"></div><div class="timeline-content"><h5>Conta Criada</h5><span class="timeline-date">Hoje</span></div></div>
+            </div>
+        </section>
+
+        <!-- JOGOS RELAX (Feature Extra 18) -->
+        <section id="jogos" class="content-section hidden">
+            <div class="section-header"><h2><i data-lucide="gamepad-2"></i> Jogos Relax</h2><p>Desestresse com jogos leves e divertidos.</p></div>
+            <div class="games-grid">
+                <div class="game-card glass-card">
+                    <h3>Bolhas de Calma</h3>
+                    <p>Clique nas bolhas para estourar o estresse!</p>
+                    <div id="game-container" role="application" aria-label="Jogo Bolhas de Calma"></div>
+                    <p>Pontos: <span id="game-score">0</span></p>
+                    <button class="btn-primary" id="btn-restart-game"><i data-lucide="rotate-ccw"></i> Reiniciar</button>
+                </div>
+                <div class="game-card glass-card">
+                    <h3>Jogo da Memoria</h3>
+                    <p>Encontre os pares e exercite a mente!</p>
+                    <div id="memory-game-container" class="memory-grid" role="application" aria-label="Jogo da Memoria"></div>
+                    <p>Tentativas: <span id="memory-attempts">0</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MUSICOTERAPIA (Feature Extra 19) -->
+        <section id="musica" class="content-section hidden">
+            <div class="section-header"><h2><i data-lucide="music"></i> Musicoterapia</h2><p>Sons e musicas para acalmar sua mente.</p></div>
+            <div class="music-grid">
+                <div class="sound-card glass-card"><div class="sound-visual"><i data-lucide="cloud-rain"></i></div><h4>Chuva Suave</h4><button class="btn-play-sound" data-sound="rain"><i data-lucide="play"></i></button></div>
+                <div class="sound-card glass-card"><div class="sound-visual"><i data-lucide="waves"></i></div><h4>Ondas do Mar</h4><button class="btn-play-sound" data-sound="ocean"><i data-lucide="play"></i></button></div>
+                <div class="sound-card glass-card"><div class="sound-visual"><i data-lucide="trees"></i></div><h4>Floresta</h4><button class="btn-play-sound" data-sound="forest"><i data-lucide="play"></i></button></div>
+                <div class="sound-card glass-card"><div class="sound-visual"><i data-lucide="flame"></i></div><h4>Fogueira</h4><button class="btn-play-sound" data-sound="fire"><i data-lucide="play"></i></button></div>
+                <div class="sound-card glass-card"><div class="sound-visual"><i data-lucide="bird"></i></div><h4>Passaros</h4><button class="btn-play-sound" data-sound="birds"><i data-lucide="play"></i></button></div>
+                <div class="sound-card glass-card"><div class="sound-visual"><i data-lucide="music-2"></i></div><h4>Piano Suave</h4><button class="btn-play-sound" data-sound="piano"><i data-lucide="play"></i></button></div>
+            </div>
+            <div class="sound-mixer glass-card hidden" id="sound-mixer">
+                <h4>Mixer de Sons</h4>
+                <div class="mixer-controls" id="mixer-controls"></div>
+                <button class="btn-secondary" id="btn-stop-all-sounds"><i data-lucide="volume-x"></i> Parar Todos</button>
+            </div>
+        </section>
+
+        <!-- RELATORIO SEMANAL/MENSAL (RF10 / Feature Extra 20) -->
+        <section id="relatorios" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="bar-chart-3"></i> Relatorios</h2>
+                <div class="section-actions">
+                    <select id="relatorio-periodo" class="select-styled select-small"><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select>
+                    <button class="btn-secondary" id="btn-exportar-pdf"><i data-lucide="file-text"></i> Exportar PDF</button>
+                </div>
+            </div>
+            <div class="report-grid">
+                <div class="report-card glass-card"><h4>Humor Predominante</h4><div class="report-value" id="report-mood">&#128522; Bem</div></div>
+                <div class="report-card glass-card"><h4>Dias Ativos</h4><div class="report-value" id="report-active-days">5/7</div></div>
+                <div class="report-card glass-card"><h4>Habitos Cumpridos</h4><div class="report-value" id="report-habits">68%</div></div>
+                <div class="report-card glass-card"><h4>Meditacoes</h4><div class="report-value" id="report-meditations">3</div></div>
+            </div>
+            <div class="report-chart glass-card">
+                <h4>Evolucao do Humor</h4>
+                <div class="line-chart" id="report-line-chart" role="img" aria-label="Grafico de evolucao do humor"></div>
+            </div>
+            <div class="report-insights glass-card">
+                <h4><i data-lucide="lightbulb"></i> Insights da IA</h4>
+                <ul id="report-insights-list">
+                    <li>Seu humor melhora nos dias em que voce medita.</li>
+                    <li>A qualidade do sono esta diretamente ligada ao seu humor matinal.</li>
+                    <li>Voce tende a se sentir mais ansioso nas quartas-feiras.</li>
                 </ul>
             </div>
-        </aside>
+        </section>
 
-        <div id="sos-fixed-container">
-            <button id="main-sos-btn" class="pulse-animation">🆘</button>
-            <div id="sos-menu" class="hidden">
-                <div class="sos-card">
-                    <h3>Precisa de ajuda agora?</h3>
-                    <p>Você não está sozinho. Escolha uma opção:</p>
-                    <button class="btn-crisis" onclick="window.open('tel:188')">Ligar para CVV (188)</button>
-                    <button class="btn-crisis-alt" id="start-breathing">Técnica de Respiração 4-7-8</button>
-                    <button class="btn-close-sos" id="close-sos-menu">Fechar</button>
+        <!-- CALENDARIO DE HUMOR (Feature Extra 20 cont.) -->
+        <section id="calendario" class="content-section hidden">
+            <div class="section-header">
+                <h2><i data-lucide="calendar-days"></i> Calendario de Humor</h2>
+                <div class="calendar-nav">
+                    <button class="btn-icon" id="btn-prev-month" aria-label="Mes anterior"><i data-lucide="chevron-left"></i></button>
+                    <span id="calendar-month-label">Abril 2026</span>
+                    <button class="btn-icon" id="btn-next-month" aria-label="Proximo mes"><i data-lucide="chevron-right"></i></button>
+                </div>
+            </div>
+            <div class="calendar-grid glass-card" id="calendar-grid">
+                <div class="calendar-header"><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sab</span><span>Dom</span></div>
+                <div class="calendar-body" id="calendar-body"></div>
+            </div>
+            <div class="calendar-legend">
+                <span class="legend-item"><span class="legend-dot" style="background: #52B788"></span> Radiante/Bem</span>
+                <span class="legend-item"><span class="legend-dot" style="background: #FFD166"></span> Neutro</span>
+                <span class="legend-item"><span class="legend-dot" style="background: #FF708D"></span> Triste/Ansioso</span>
+                <span class="legend-item"><span class="legend-dot" style="background: #ccc"></span> Sem registro</span>
+            </div>
+        </section>
+
+        <!-- EXPORTAR DADOS (RNF02 - LGPD) -->
+        <section id="exportar" class="content-section hidden">
+            <div class="section-header"><h2><i data-lucide="download"></i> Exportar Dados</h2><p>Seus dados pertencem a voce. Exporte quando quiser.</p></div>
+            <div class="export-options glass-card">
+                <div class="export-option">
+                    <div class="export-info"><i data-lucide="file-text"></i><div><h4>Relatorio Terapeutico (PDF)</h4><p>Exporte um relatorio completo para compartilhar com seu terapeuta.</p></div></div>
+                    <button class="btn-primary" id="btn-export-pdf"><i data-lucide="download"></i> Gerar PDF</button>
+                </div>
+                <div class="export-option">
+                    <div class="export-info"><i data-lucide="file-json"></i><div><h4>Dados Completos (JSON)</h4><p>Exporte todos os seus dados em formato JSON (LGPD).</p></div></div>
+                    <button class="btn-secondary" id="btn-export-json"><i data-lucide="download"></i> Exportar JSON</button>
+                </div>
+                <div class="export-option">
+                    <div class="export-info"><i data-lucide="file-spreadsheet"></i><div><h4>Planilha (CSV)</h4><p>Exporte seus registros em formato de planilha.</p></div></div>
+                    <button class="btn-secondary" id="btn-export-csv"><i data-lucide="download"></i> Exportar CSV</button>
+                </div>
+                <hr>
+                <div class="export-option export-option--danger">
+                    <div class="export-info"><i data-lucide="trash-2"></i><div><h4>Apagar Todos os Dados</h4><p>Direito ao esquecimento (LGPD). Esta acao e irreversivel.</p></div></div>
+                    <button class="btn-danger" id="btn-delete-all-data"><i data-lucide="trash-2"></i> Apagar Tudo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PERFIL DO USUARIO -->
+        <section id="perfil" class="content-section hidden">
+            <div class="section-header"><h2><i data-lucide="user"></i> Meu Perfil</h2></div>
+            <div class="profile-card glass-card">
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar"><span id="profile-initials">U</span></div>
+                    <button class="btn-secondary btn-small" id="btn-change-avatar"><i data-lucide="camera"></i> Alterar Foto</button>
+                </div>
+                <form id="form-perfil" class="profile-form">
+                    <div class="input-group-row">
+                        <div class="input-container"><label for="perfil-nome">Nome</label><input type="text" id="perfil-nome"></div>
+                        <div class="input-container"><label for="perfil-email">E-mail</label><input type="email" id="perfil-email" disabled></div>
+                    </div>
+                    <div class="input-group-row">
+                        <div class="input-container"><label for="perfil-nascimento">Data de Nascimento</label><input type="date" id="perfil-nascimento"></div>
+                        <div class="input-container"><label for="perfil-telefone">Telefone</label><input type="tel" id="perfil-telefone"></div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i data-lucide="save"></i> Salvar Alteracoes</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- CONFIGURACOES -->
+        <section id="configuracoes" class="content-section hidden">
+            <div class="section-header"><h2><i data-lucide="settings"></i> Configuracoes</h2></div>
+            <div class="settings-list glass-card">
+                <div class="settings-section">
+                    <h4>Notificacoes</h4>
+                    <div class="setting-row"><span>Lembrete do Diario</span><label class="toggle-switch"><input type="checkbox" id="cfg-lembrete-diario" checked><span class="toggle-slider"></span></label></div>
+                    <div class="setting-row"><span>Notificacoes por E-mail</span><label class="toggle-switch"><input type="checkbox" id="cfg-email-notif"><span class="toggle-slider"></span></label></div>
+                    <div class="setting-row"><span>Horario do Lembrete</span><input type="time" id="cfg-horario-lembrete" value="20:00" class="input-small"></div>
+                </div>
+                <div class="settings-section">
+                    <h4>Seguranca</h4>
+                    <div class="setting-row"><span>Alterar PIN</span><button class="btn-secondary btn-small" id="btn-alterar-pin">Alterar</button></div>
+                    <div class="setting-row"><span>Alterar Senha</span><button class="btn-secondary btn-small" id="btn-alterar-senha">Alterar</button></div>
+                    <div class="setting-row"><span>Autenticacao em 2 Fatores</span><label class="toggle-switch"><input type="checkbox" id="cfg-2fa"><span class="toggle-slider"></span></label></div>
+                </div>
+                <div class="settings-section">
+                    <h4>Aparencia</h4>
+                    <div class="setting-row"><span>Tema</span><select id="cfg-tema" class="select-styled select-small"><option value="claro">Claro</option><option value="escuro">Escuro</option><option value="sistema">Sistema</option></select></div>
+                    <div class="setting-row"><span>Idioma</span><select id="cfg-idioma" class="select-styled select-small"><option value="pt-br">Portugues (BR)</option><option value="en">English</option><option value="es">Espanol</option></select></div>
+                </div>
+                <div class="settings-section">
+                    <h4>Contatos de Emergencia</h4>
+                    <div class="emergency-contacts" id="emergency-contacts">
+                        <div class="emergency-contact"><span>CVV - 188</span><button class="btn-icon" aria-label="Ligar"><i data-lucide="phone"></i></button></div>
+                    </div>
+                    <button class="btn-secondary btn-small" id="btn-add-emergency"><i data-lucide="plus"></i> Adicionar Contato</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRIVACIDADE E DADOS (RNF02 - LGPD) -->
+        <section id="privacidade-dados" class="content-section hidden">
+            <div class="section-header"><h2><i data-lucide="shield"></i> Privacidade e Dados (LGPD)</h2></div>
+            <div class="privacy-content glass-card">
+                <div class="privacy-section">
+                    <h4>Seus Direitos (LGPD)</h4>
+                    <ul class="privacy-rights">
+                        <li><i data-lucide="eye"></i> <strong>Acesso:</strong> Voce pode visualizar todos os seus dados a qualquer momento.</li>
+                        <li><i data-lucide="edit-3"></i> <strong>Correcao:</strong> Corrija seus dados pessoais na secao de Perfil.</li>
+                        <li><i data-lucide="download"></i> <strong>Portabilidade:</strong> Exporte seus dados em JSON ou CSV.</li>
+                        <li><i data-lucide="trash-2"></i> <strong>Eliminacao:</strong> Solicite a exclusao de todos os seus dados.</li>
+                        <li><i data-lucide="lock"></i> <strong>Seguranca:</strong> Seus dados sao criptografados com AES-256.</li>
+                    </ul>
+                </div>
+                <div class="privacy-section">
+                    <h4>Consentimentos</h4>
+                    <div class="setting-row"><span>Processamento de dados para analise de IA</span><label class="toggle-switch"><input type="checkbox" id="consent-ia" checked><span class="toggle-slider"></span></label></div>
+                    <div class="setting-row"><span>Receber notificacoes por e-mail</span><label class="toggle-switch"><input type="checkbox" id="consent-email"><span class="toggle-slider"></span></label></div>
+                    <div class="setting-row"><span>Participar de pesquisas anonimas</span><label class="toggle-switch"><input type="checkbox" id="consent-pesquisa"><span class="toggle-slider"></span></label></div>
+                </div>
+                <div class="privacy-actions">
+                    <button class="btn-primary" id="btn-save-privacy"><i data-lucide="save"></i> Salvar Preferencias</button>
+                    <button class="btn-danger" id="btn-request-deletion"><i data-lucide="trash-2"></i> Solicitar Exclusao de Conta</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONFIGURACOES DE NOTIFICACOES (RF11) -->
+        <section id="configuracoes-notificacoes" class="content-section hidden">
+            <div class="section-header"><h2><i data-lucide="bell"></i> Configuracoes de Notificacoes</h2></div>
+            <div class="settings-list glass-card">
+                <div class="setting-row"><span>Lembrete diario do diario</span><label class="toggle-switch"><input type="checkbox" id="notif-diario" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><span>Ofensivas e conquistas</span><label class="toggle-switch"><input type="checkbox" id="notif-conquistas" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><span>Dicas de bem-estar</span><label class="toggle-switch"><input type="checkbox" id="notif-dicas" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><span>Atualizacoes da comunidade</span><label class="toggle-switch"><input type="checkbox" id="notif-comunidade"><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><span>Horario preferido</span><input type="time" id="notif-horario" value="20:00" class="input-small"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SOS - BOTAO DE ACOLHIMENTO (RF04) -->
+    <aside id="sos-container" class="hidden" role="complementary" aria-label="Botao de emergencia">
+        <button class="btn-sos" id="btn-sos-main" aria-label="Socorro - Botao de acolhimento" title="Precisa de ajuda?">
+            <i data-lucide="heart-pulse"></i>
+        </button>
+        <div id="modal-respiracao" class="modal-sos hidden" role="dialog" aria-modal="true" aria-labelledby="sos-title">
+            <div class="modal-content glass-card">
+                <h3 id="sos-title"><i data-lucide="heart"></i> Voce nao esta sozinho(a)</h3>
+                <div class="sos-tabs">
+                    <button class="sos-tab active" data-tab="respiracao">Respiracao</button>
+                    <button class="sos-tab" data-tab="grounding">Grounding 5-4-3-2-1</button>
+                    <button class="sos-tab" data-tab="contatos">Contatos</button>
+                </div>
+                <div class="sos-content" id="sos-tab-respiracao">
+                    <div class="breathing-circle" aria-hidden="true"></div>
+                    <p id="breathing-text">Inspire... 4 segundos</p>
+                </div>
+                <div class="sos-content hidden" id="sos-tab-grounding">
+                    <p>Tecnica de ancoragem sensorial:</p>
+                    <ul class="grounding-list">
+                        <li><strong>5</strong> coisas que voce pode <em>ver</em></li>
+                        <li><strong>4</strong> coisas que voce pode <em>tocar</em></li>
+                        <li><strong>3</strong> coisas que voce pode <em>ouvir</em></li>
+                        <li><strong>2</strong> coisas que voce pode <em>cheirar</em></li>
+                        <li><strong>1</strong> coisa que voce pode <em>saborear</em></li>
+                    </ul>
+                </div>
+                <div class="sos-content hidden" id="sos-tab-contatos">
+                    <div class="emergency-list">
+                        <a href="tel:188" class="emergency-btn"><i data-lucide="phone"></i> CVV - 188 (24h)</a>
+                        <a href="https://www.cvv.org.br" target="_blank" rel="noopener noreferrer" class="emergency-btn"><i data-lucide="message-circle"></i> Chat CVV Online</a>
+                        <a href="tel:192" class="emergency-btn"><i data-lucide="ambulance"></i> SAMU - 192</a>
+                    </div>
+                </div>
+                <button id="close-sos" class="btn-link">Fechar</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- FAQ / CENTRAL DE AJUDA -->
+    <div id="modal-faq" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="faq-title">
+        <div class="modal-card modal-card--wide glass-card">
+            <div class="modal-header"><h3 id="faq-title"><i data-lucide="help-circle"></i> Central de Ajuda</h3><button class="btn-icon" id="close-faq"><i data-lucide="x"></i></button></div>
+            <div class="faq-list">
+                <details class="faq-item"><summary>O que e o Genese do Equilibrio?</summary><p>E uma plataforma de saude mental baseada em TCC e Psicologia Positiva, focada em combater a autossabotagem.</p></details>
+                <details class="faq-item"><summary>Meus dados estao seguros?</summary><p>Sim! Utilizamos criptografia AES-256 e seguimos totalmente a LGPD.</p></details>
+                <details class="faq-item"><summary>Posso exportar meus dados?</summary><p>Sim, voce pode exportar em PDF, JSON ou CSV a qualquer momento.</p></details>
+                <details class="faq-item"><summary>O app substitui terapia?</summary><p>Nao. O Genese e uma ferramenta de apoio. Sempre busque acompanhamento profissional.</p></details>
+                <details class="faq-item"><summary>Como funciona o sistema de ofensivas?</summary><p>A cada dia que voce escreve no diario, seu contador de ofensiva aumenta. Se pular um dia, o contador reinicia.</p></details>
+            </div>
+        </div>
+    </div>
+
+    <!-- TERMOS DE USO -->
+    <div id="modal-termos" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="termos-title">
+        <div class="modal-card modal-card--wide glass-card">
+            <div class="modal-header"><h3 id="termos-title">Termos de Uso</h3><button class="btn-icon" id="close-termos"><i data-lucide="x"></i></button></div>
+            <div class="legal-text">
+                <p>Ao utilizar o Genese do Equilibrio, voce concorda com os seguintes termos...</p>
+                <p>1. O aplicativo e uma ferramenta de apoio emocional e nao substitui acompanhamento profissional.</p>
+                <p>2. Seus dados sao protegidos conforme a LGPD (Lei Geral de Protecao de Dados).</p>
+                <p>3. Voce tem direito a acessar, corrigir, exportar e excluir seus dados a qualquer momento.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- POLITICA DE PRIVACIDADE -->
+    <div id="modal-privacidade" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="privacidade-title">
+        <div class="modal-card modal-card--wide glass-card">
+            <div class="modal-header"><h3 id="privacidade-title">Politica de Privacidade</h3><button class="btn-icon" id="close-privacidade"><i data-lucide="x"></i></button></div>
+            <div class="legal-text">
+                <p><strong>Conformidade com a LGPD</strong></p>
+                <p>O Genese do Equilibrio se compromete com a protecao dos dados pessoais dos usuarios conforme a Lei 13.709/2018.</p>
+                <p>Dados coletados: nome, e-mail, relatos do diario (criptografados com AES-256), metricas de humor.</p>
+                <p>Finalidade: Exclusivamente para prover o servico de apoio emocional e gerar insights personalizados.</p>
+                <p>Retencao: Os dados sao mantidos enquanto a conta estiver ativa. Voce pode solicitar exclusao a qualquer momento.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+    <!-- RODAPE -->
+    <footer id="main-footer" class="hidden" role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo"><i data-lucide="leaf"></i> Genese do Equilibrio</div>
+                <p>Transformando autoconhecimento em acoes praticas.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Recursos</h4>
+                    <a href="#" id="footer-faq">Central de Ajuda</a>
+                    <a href="#" data-target="psicoeducacao">Psicoeducacao</a>
+                    <a href="#" data-target="curadoria">Curadoria de Midia</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <a href="#termos" id="footer-termos">Termos de Uso</a>
+                    <a href="#privacidade" id="footer-privacidade">Politica de Privacidade</a>
+                    <a href="#" data-target="privacidade-dados">LGPD</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Emergencia</h4>
+                    <a href="tel:188">CVV - 188</a>
+                    <a href="tel:192">SAMU - 192</a>
+                    <a href="https://www.cvv.org.br" target="_blank" rel="noopener noreferrer">CVV Online</a>
                 </div>
             </div>
         </div>
-
-        <div id="breathing-modal" class="modal-overlay hidden">
-            <div class="breathing-container">
-                <div class="circle-wrap">
-                    <div class="circle-core"></div>
-                    <div class="circle-expand"></div>
-                </div>
-                <h2 id="breathing-instruction">Inspire...</h2>
-                <button class="btn-exit-modal">Finalizar</button>
-            </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Genese do Equilibrio. Todos os direitos reservados.</p>
+            <p class="footer-warning"><i data-lucide="alert-triangle"></i> <strong>Aviso:</strong> Este site e uma ferramenta de apoio emocional e autoconhecimento. Ele <strong>nao substitui</strong> o acompanhamento medico ou psicologico profissional.</p>
         </div>
-
-    </div> <footer class="app-footer hidden" id="global-footer">
-        <p>&copy; 2024 Gênese do Equilíbrio - Em conformidade com a LGPD. 
-           Este sistema é um apoio e não substitui ajuda profissional.</p>
     </footer>
 
-    <script src="auth.js"></script> <script src="dashboard.js"></script> <script src="ia-engine.js"></script> <script src="games.js"></script> </body>
+    <!-- SCRIPTS -->
+    <script src="db.js"></script>
+    <script src="controller.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
+</body>
 </html>
