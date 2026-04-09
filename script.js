@@ -1,160 +1,239 @@
-/**
- * GÊNESE DO EQUILÍBRIO - Script v9.0 (Completo)
- * Funcionalidades: Navegação, Recuperação, Mini-jogo e SOS
- */
-
-const UI = {
-    // Telas Principais
-    login: document.getElementById('login'),
-    cadastro: document.getElementById('cadastro'),
-    recuperar: document.getElementById('recuperar-senha'),
-    header: document.getElementById('main-header'),
-    main: document.getElementById('conteudo-principal'),
-    sos: document.getElementById('sos-container'),
-    footer: document.getElementById('main-footer'),
-    
-    // Navegação de Abas
-    secoesApp: document.querySelectorAll('.content-section'),
-    botoesNav: document.querySelectorAll('.nav-btn'),
-    
-    // Humor
-    botoesHumor: document.querySelectorAll('.btn-mood'),
-    humorSelecionado: null
+/* ==========================================================================
+   CONFIGURAÇÕES INICIAIS E ESTADO
+   ========================================================================== */
+const state = {
+    user: null,
+    currentMood: null,
+    isDarkMode: false
 };
 
-// --- 1. NAVEGAÇÃO ENTRE TELAS (LOGIN/APP) ---
-function navegarTela(destino) {
-    [UI.login, UI.cadastro, UI.recuperar, UI.header, UI.main, UI.sos, UI.footer].forEach(el => el?.classList.add('hidden'));
-    
-    if (destino === 'app') {
-        UI.header.classList.remove('hidden');
-        UI.main.classList.remove('hidden');
-        UI.sos.classList.remove('hidden');
-        UI.footer.classList.remove('hidden');
-        trocarAba('diario'); // Começa sempre no diário
-    } else {
-        document.getElementById(destino).classList.remove('hidden');
-    }
-}
+// Seletores Globais
+const loader = document.getElementById('loader');
+const body = document.body;
 
-// --- 2. NAVEGAÇÃO DE ABAS (DIÁRIO / HISTÓRICO / RELAX) ---
-function trocarAba(idAba) {
-    UI.secoesApp.forEach(sec => sec.classList.add('hidden'));
-    UI.botoesNav.forEach(btn => btn.classList.remove('active'));
-    
-    const abaAtiva = document.getElementById(idAba);
-    const btnAtivo = document.querySelector(`[data-target="${idAba}"]`);
-    
-    if (abaAtiva) abaAtiva.classList.remove('hidden');
-    if (btnAtivo) btnAtivo.classList.add('active');
+/* ==========================================================================
+   1. FLUXO DE AUTENTICAÇÃO (Login e Cadastro)
+   ========================================================================== */
 
-    if (idAba === 'jogos') iniciarJogo();
-}
+// Alternância de Telas
+document.getElementById('link-cadastro').addEventListener('click', () => {
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('cadastro').classList.remove('hidden');
+});
 
-UI.botoesNav.forEach(btn => {
+document.querySelectorAll('.voltar-login').forEach(btn => {
     btn.addEventListener('click', () => {
-        const alvo = btn.getAttribute('data-target');
-        if (alvo) trocarAba(alvo);
+        document.getElementById('cadastro').classList.add('hidden');
+        document.getElementById('login').classList.remove('hidden');
     });
 });
 
-// --- 3. RECUPERAÇÃO DE SENHA (SIMULADA) ---
-let codigoGerado = null;
-
-document.getElementById('btn-esqueci-senha').addEventListener('click', () => navegarTela('recuperar-senha'));
-
-document.getElementById('btn-enviar-codigo').addEventListener('click', () => {
-    const email = document.getElementById('email-recuperar').value;
-    if (!email) return alert("Digite seu e-mail.");
-    
-    codigoGerado = Math.floor(1000 + Math.random() * 9000); // Gera 4 dígitos
-    alert(`[Simulação] Código enviado para ${email}: ${codigoGerado}`);
-    
-    document.getElementById('etapa-email').classList.add('hidden');
-    document.getElementById('etapa-codigo').classList.remove('hidden');
+// Máscara de CPF
+document.getElementById('cad-cpf').addEventListener('input', (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    e.target.value = value;
 });
 
-document.getElementById('btn-confirmar-nova-senha').addEventListener('click', () => {
-    const codDigitado = document.getElementById('codigo-verificacao').value;
-    const novaSenha = document.getElementById('nova-senha').value;
-    const user = JSON.parse(localStorage.getItem('user_genese'));
-
-    if (codDigitado == codigoGerado && user) {
-        user.senha = novaSenha;
-        localStorage.setItem('user_genese', JSON.stringify(user));
-        alert("Senha alterada com sucesso!");
-        navegarTela('login');
-    } else {
-        alert("Código incorreto ou usuário não encontrado.");
-    }
-});
-
-// --- 4. MINI-JOGO: BOLHAS DE CALMA ---
-let pontuacao = 0;
-function iniciarJogo() {
-    const container = document.getElementById('game-container');
-    const scoreEl = document.getElementById('game-score');
-    container.innerHTML = "";
-    pontuacao = 0;
-    scoreEl.innerText = pontuacao;
-
-    const gameInterval = setInterval(() => {
-        if (document.getElementById('jogos').classList.contains('hidden')) {
-            clearInterval(gameInterval);
-            return;
-        }
-
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        bubble.style.left = Math.random() * (container.offsetWidth - 50) + "px";
-        bubble.innerText = "🫧";
-        
-        bubble.onclick = () => {
-            pontuacao++;
-            scoreEl.innerText = pontuacao;
-            bubble.remove();
-        };
-
-        container.appendChild(bubble);
-        setTimeout(() => bubble.remove(), 4000);
-    }, 1000);
-}
-
-// --- 5. LOGIN E CADASTRO ---
-document.getElementById('form-login').addEventListener('submit', (e) => {
+// Validação de Login com Captcha
+document.getElementById('form-login').addEventListener('submit', function(e) {
     e.preventDefault();
-    const email = document.getElementById('email-login').value;
-    const senha = document.getElementById('senha-login').value;
-    const salvo = JSON.parse(localStorage.getItem('user_genese'));
+    const captchaResult = document.getElementById('check-robot-login').value;
 
-    if (salvo && email === salvo.email && senha === salvo.senha) {
-        navegarTela('app');
-    } else {
-        alert("E-mail ou senha incorretos.");
+    if (captchaResult !== "8") {
+        alert("Captcha incorreto! Tente novamente.");
+        return;
     }
+
+    showLoader(true);
+
+    // Simulação de delay de rede
+    setTimeout(() => {
+        showLoader(false);
+        document.getElementById('login').classList.add('hidden');
+        document.getElementById('app-shell').classList.remove('hidden');
+        document.getElementById('global-footer').classList.remove('hidden');
+        
+        // Inicializa dados fictícios
+        document.getElementById('user-name-display').innerText = "Viajante";
+    }, 1500);
 });
 
-document.querySelectorAll('.voltar-login').forEach(el => {
-    el.onclick = () => navegarTela('login');
+// Validação de Cadastro
+document.getElementById('form-cadastro').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const senha = document.getElementById('cad-senha').value;
+    const confirma = document.getElementById('cad-senha-confirma').value;
+
+    if (senha !== confirma) {
+        alert("As senhas não coincidem!");
+        return;
+    }
+
+    alert("Jornada iniciada com sucesso! Agora faça login.");
+    this.reset();
+    document.getElementById('cadastro').classList.add('hidden');
+    document.getElementById('login').classList.remove('hidden');
+});
+
+/* ==========================================================================
+   2. NAVEGAÇÃO E INTERFACE (Shell)
+   ========================================================================== */
+
+// Troca de Abas Sidebar
+document.querySelectorAll('.nav-item').forEach(button => {
+    button.addEventListener('click', () => {
+        const target = button.getAttribute('data-target');
+        
+        // Atualizar UI dos botões
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        button.classList.add('active');
+
+        // Alternar Seções
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
+        
+        const targetSec = document.getElementById(`sec-${target}`);
+        if(targetSec) targetSec.classList.remove('hidden');
+        
+        // Atualizar título da página
+        document.getElementById('page-title').innerText = button.innerText.split(' ')[1];
+    });
+});
+
+// Modo Escuro
+document.getElementById('toggle-dark-mode').addEventListener('click', () => {
+    body.classList.toggle('dark-theme');
+    body.classList.toggle('light-theme');
 });
 
 // Logout
 document.getElementById('logout-btn').addEventListener('click', () => {
-    location.reload(); // Reinicia o app para segurança
+    if(confirm("Deseja realmente sair?")) {
+        location.reload(); // Reseta o estado da aplicação
+    }
 });
 
-// Inicialização de Humores
-UI.botoesHumor.forEach(btn => {
-    btn.addEventListener('click', () => {
-        UI.botoesHumor.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        UI.humorSelecionado = btn.dataset.mood;
+/* ==========================================================================
+   3. CORE: DASHBOARD E "IA"
+   ========================================================================== */
+
+// Seletor de Humor
+document.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.mood-btn').forEach(b => b.style.transform = "scale(1)");
+        this.style.transform = "scale(1.4)";
+        state.currentMood = this.getAttribute('data-mood');
     });
 });
 
-// SOS CVV
-document.getElementById('btn-cvv').onclick = () => window.open('https://www.cvv.org.br', '_blank');
+// Contador de Caracteres
+const entryArea = document.getElementById('daily-entry');
+entryArea.addEventListener('input', (e) => {
+    const count = e.target.value.length;
+    document.getElementById('char-count').innerText = `${count}/1000`;
+});
 
-// Inicia na tela de login
-navegarTela('login');
+// Simulação Motor de IA
+document.getElementById('save-entry').addEventListener('click', async () => {
+    const text = entryArea.value;
+    if(text.length < 10) return alert("Conte-nos um pouco mais...");
 
+    const loaderIA = document.getElementById('ai-content-loader');
+    const responseIA = document.getElementById('ai-response');
+    
+    loaderIA.classList.remove('hidden');
+    responseIA.innerHTML = "";
+
+    // Simulação de Processamento
+    setTimeout(() => {
+        loaderIA.classList.add('hidden');
+        responseIA.innerHTML = `
+            <p><strong>Análise:</strong> Identificamos um padrão de leve ansiedade em seu relato. 
+            Lembre-se que sentimentos são nuvens, eles passam.</p>
+        `;
+        document.getElementById('media-rec').classList.remove('hidden');
+        document.getElementById('rec-text').innerText = "Ouça 'Weightless' da Marconi Union para reduzir o cortisol.";
+        
+        // Desbloquear Insígnia (Gamificação)
+        const firstBadge = document.querySelector('.badge.locked');
+        if(firstBadge) firstBadge.classList.remove('locked');
+        
+    }, 2000);
+});
+
+/* ==========================================================================
+   4. SISTEMA SOS E RESPIRAÇÃO (Técnica 4-7-8)
+   ========================================================================== */
+
+const sosBtn = document.getElementById('main-sos-btn');
+const sosMenu = document.getElementById('sos-menu');
+
+sosBtn.addEventListener('click', () => sosMenu.classList.toggle('hidden'));
+
+document.getElementById('start-breathing').addEventListener('click', () => {
+    document.getElementById('breathing-modal').classList.remove('hidden');
+    runBreathingCycle();
+});
+
+document.querySelector('.btn-exit-modal').addEventListener('click', () => {
+    document.getElementById('breathing-modal').classList.add('hidden');
+});
+
+async function runBreathingCycle() {
+    const text = document.getElementById('breathing-instruction');
+    const circle = document.querySelector('.circle-expand');
+
+    const cycle = async (label, seconds, grow) => {
+        text.innerText = label;
+        circle.style.transition = `all ${seconds}s linear`;
+        circle.style.transform = grow ? 'scale(1.5)' : 'scale(1)';
+        circle.style.opacity = grow ? '0.8' : '0.3';
+        await new Promise(r => setTimeout(r, seconds * 1000));
+    };
+
+    while (!document.getElementById('breathing-modal').classList.contains('hidden')) {
+        await cycle("Inspire...", 4, true);
+        await cycle("Segure...", 7, true);
+        await cycle("Expire lentamente...", 8, false);
+    }
+}
+
+/* ==========================================================================
+   5. MINI-GAMES E PERSISTÊNCIA
+   ========================================================================== */
+
+// Check-list de Hábitos (Persistência Local)
+const habits = ['h-sono', 'h-agua', 'h-medita'];
+habits.forEach(id => {
+    const el = document.getElementById(id);
+    // Carregar
+    el.checked = localStorage.getItem(id) === 'true';
+    // Salvar
+    el.addEventListener('change', (e) => {
+        localStorage.setItem(id, e.target.checked);
+    });
+});
+
+// Funções Auxiliares
+function showLoader(show) {
+    loader.classList.toggle('hidden', !show);
+// Selecionando os elementos
+const telaLogin = document.getElementById('login');
+const telaCadastro = document.getElementById('cadastro');
+const btnIrParaCadastro = document.getElementById('link-cadastro');
+const btnVoltarParaLogin = document.querySelector('.voltar-login');
+
+// Função para mostrar cadastro e esconder login
+btnIrParaCadastro.addEventListener('click', () => {
+    telaLogin.classList.add('hidden');
+    telaCadastro.classList.remove('hidden');
+});
+
+// Função para voltar ao login
+btnVoltarParaLogin.addEventListener('click', () => {
+    telaCadastro.classList.add('hidden');
+    telaLogin.classList.remove('hidden');
+});
+}
