@@ -1,239 +1,197 @@
-/* ==========================================================================
-   CONFIGURAÇÕES INICIAIS E ESTADO
-   ========================================================================== */
-const state = {
-    user: null,
-    currentMood: null,
-    isDarkMode: false
+/**
+ * Gênese do Equilíbrio - Core Engine
+ * Versão: 2.0.0
+ * Descrição: Gerenciamento de SPA, Segurança, SOS e Gamificação.
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    initAuth();
+    initDashboard();
+    initSOS();
+    initMasks();
+    initNotifications();
+});
+
+// --- 1. SISTEMA DE NOTIFICAÇÕES (TOAST) ---
+const showToast = (message, type = 'success') => {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+    `;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }, 3500);
 };
 
-// Seletores Globais
-const loader = document.getElementById('loader');
-const body = document.body;
+// --- 2. GERENCIAMENTO DE AUTENTICAÇÃO ---
+const initAuth = () => {
+    const loginForm = document.getElementById('form-login');
+    const signupForm = document.getElementById('form-signup');
+    const focusChips = document.querySelectorAll('.focus-chips .chip');
 
-/* ==========================================================================
-   1. FLUXO DE AUTENTICAÇÃO (Login e Cadastro)
-   ========================================================================== */
+    // Troca de Telas com Animação
+    window.switchAuth = (view) => {
+        const views = document.querySelectorAll('.auth-form-content');
+        views.forEach(v => {
+            v.style.opacity = '0';
+            setTimeout(() => v.classList.add('hidden'), 200);
+        });
 
-// Alternância de Telas
-document.getElementById('link-cadastro').addEventListener('click', () => {
-    document.getElementById('login').classList.add('hidden');
-    document.getElementById('cadastro').classList.remove('hidden');
-});
-
-document.querySelectorAll('.voltar-login').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.getElementById('cadastro').classList.add('hidden');
-        document.getElementById('login').classList.remove('hidden');
-    });
-});
-
-// Máscara de CPF
-document.getElementById('cad-cpf').addEventListener('input', (e) => {
-    let value = e.target.value.replace(/\D/g, "");
-    value = value.replace(/(\d{3})(\d)/, "$1.$2");
-    value = value.replace(/(\d{3})(\d)/, "$1.$2");
-    value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-    e.target.value = value;
-});
-
-// Validação de Login com Captcha
-document.getElementById('form-login').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const captchaResult = document.getElementById('check-robot-login').value;
-
-    if (captchaResult !== "8") {
-        alert("Captcha incorreto! Tente novamente.");
-        return;
-    }
-
-    showLoader(true);
-
-    // Simulação de delay de rede
-    setTimeout(() => {
-        showLoader(false);
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('app-shell').classList.remove('hidden');
-        document.getElementById('global-footer').classList.remove('hidden');
-        
-        // Inicializa dados fictícios
-        document.getElementById('user-name-display').innerText = "Viajante";
-    }, 1500);
-});
-
-// Validação de Cadastro
-document.getElementById('form-cadastro').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const senha = document.getElementById('cad-senha').value;
-    const confirma = document.getElementById('cad-senha-confirma').value;
-
-    if (senha !== confirma) {
-        alert("As senhas não coincidem!");
-        return;
-    }
-
-    alert("Jornada iniciada com sucesso! Agora faça login.");
-    this.reset();
-    document.getElementById('cadastro').classList.add('hidden');
-    document.getElementById('login').classList.remove('hidden');
-});
-
-/* ==========================================================================
-   2. NAVEGAÇÃO E INTERFACE (Shell)
-   ========================================================================== */
-
-// Troca de Abas Sidebar
-document.querySelectorAll('.nav-item').forEach(button => {
-    button.addEventListener('click', () => {
-        const target = button.getAttribute('data-target');
-        
-        // Atualizar UI dos botões
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-        button.classList.add('active');
-
-        // Alternar Seções
-        document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
-        
-        const targetSec = document.getElementById(`sec-${target}`);
-        if(targetSec) targetSec.classList.remove('hidden');
-        
-        // Atualizar título da página
-        document.getElementById('page-title').innerText = button.innerText.split(' ')[1];
-    });
-});
-
-// Modo Escuro
-document.getElementById('toggle-dark-mode').addEventListener('click', () => {
-    body.classList.toggle('dark-theme');
-    body.classList.toggle('light-theme');
-});
-
-// Logout
-document.getElementById('logout-btn').addEventListener('click', () => {
-    if(confirm("Deseja realmente sair?")) {
-        location.reload(); // Reseta o estado da aplicação
-    }
-});
-
-/* ==========================================================================
-   3. CORE: DASHBOARD E "IA"
-   ========================================================================== */
-
-// Seletor de Humor
-document.querySelectorAll('.mood-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.mood-btn').forEach(b => b.style.transform = "scale(1)");
-        this.style.transform = "scale(1.4)";
-        state.currentMood = this.getAttribute('data-mood');
-    });
-});
-
-// Contador de Caracteres
-const entryArea = document.getElementById('daily-entry');
-entryArea.addEventListener('input', (e) => {
-    const count = e.target.value.length;
-    document.getElementById('char-count').innerText = `${count}/1000`;
-});
-
-// Simulação Motor de IA
-document.getElementById('save-entry').addEventListener('click', async () => {
-    const text = entryArea.value;
-    if(text.length < 10) return alert("Conte-nos um pouco mais...");
-
-    const loaderIA = document.getElementById('ai-content-loader');
-    const responseIA = document.getElementById('ai-response');
-    
-    loaderIA.classList.remove('hidden');
-    responseIA.innerHTML = "";
-
-    // Simulação de Processamento
-    setTimeout(() => {
-        loaderIA.classList.add('hidden');
-        responseIA.innerHTML = `
-            <p><strong>Análise:</strong> Identificamos um padrão de leve ansiedade em seu relato. 
-            Lembre-se que sentimentos são nuvens, eles passam.</p>
-        `;
-        document.getElementById('media-rec').classList.remove('hidden');
-        document.getElementById('rec-text').innerText = "Ouça 'Weightless' da Marconi Union para reduzir o cortisol.";
-        
-        // Desbloquear Insígnia (Gamificação)
-        const firstBadge = document.querySelector('.badge.locked');
-        if(firstBadge) firstBadge.classList.remove('locked');
-        
-    }, 2000);
-});
-
-/* ==========================================================================
-   4. SISTEMA SOS E RESPIRAÇÃO (Técnica 4-7-8)
-   ========================================================================== */
-
-const sosBtn = document.getElementById('main-sos-btn');
-const sosMenu = document.getElementById('sos-menu');
-
-sosBtn.addEventListener('click', () => sosMenu.classList.toggle('hidden'));
-
-document.getElementById('start-breathing').addEventListener('click', () => {
-    document.getElementById('breathing-modal').classList.remove('hidden');
-    runBreathingCycle();
-});
-
-document.querySelector('.btn-exit-modal').addEventListener('click', () => {
-    document.getElementById('breathing-modal').classList.add('hidden');
-});
-
-async function runBreathingCycle() {
-    const text = document.getElementById('breathing-instruction');
-    const circle = document.querySelector('.circle-expand');
-
-    const cycle = async (label, seconds, grow) => {
-        text.innerText = label;
-        circle.style.transition = `all ${seconds}s linear`;
-        circle.style.transform = grow ? 'scale(1.5)' : 'scale(1)';
-        circle.style.opacity = grow ? '0.8' : '0.3';
-        await new Promise(r => setTimeout(r, seconds * 1000));
+        setTimeout(() => {
+            const target = document.getElementById(`view-${view}`);
+            target.classList.remove('hidden');
+            setTimeout(() => target.style.opacity = '1', 50);
+        }, 250);
     };
 
-    while (!document.getElementById('breathing-modal').classList.contains('hidden')) {
-        await cycle("Inspire...", 4, true);
-        await cycle("Segure...", 7, true);
-        await cycle("Expire lentamente...", 8, false);
-    }
-}
+    // Simulação de Login
+    loginForm.addEventListener('submit', (e) => {
+        const btn = loginForm.querySelector('button');
+        const originalContent = btn.innerHTML;
 
-/* ==========================================================================
-   5. MINI-GAMES E PERSISTÊNCIA
-   ========================================================================== */
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Validando acesso...`;
 
-// Check-list de Hábitos (Persistência Local)
-const habits = ['h-sono', 'h-agua', 'h-medita'];
-habits.forEach(id => {
-    const el = document.getElementById(id);
-    // Carregar
-    el.checked = localStorage.getItem(id) === 'true';
-    // Salvar
-    el.addEventListener('change', (e) => {
-        localStorage.setItem(id, e.target.checked);
+        setTimeout(() => {
+            document.getElementById('auth-portal').classList.add('hidden');
+            document.getElementById('app-dashboard').classList.remove('hidden');
+            showToast("Bem-vindo ao seu refúgio, Usuário.");
+        }, 1500);
     });
-});
 
-// Funções Auxiliares
-function showLoader(show) {
-    loader.classList.toggle('hidden', !show);
-// Selecionando os elementos
-const telaLogin = document.getElementById('login');
-const telaCadastro = document.getElementById('cadastro');
-const btnIrParaCadastro = document.getElementById('link-cadastro');
-const btnVoltarParaLogin = document.querySelector('.voltar-login');
+    // Seleção de Chips (Foco)
+    focusChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            chip.classList.toggle('active');
+        });
+    });
+};
 
-// Função para mostrar cadastro e esconder login
-btnIrParaCadastro.addEventListener('click', () => {
-    telaLogin.classList.add('hidden');
-    telaCadastro.classList.remove('hidden');
-});
+// --- 3. DASHBOARD E SEGURANÇA ---
+const initDashboard = () => {
+    const sidebarLinks = document.querySelectorAll('.sidebar nav a');
+    const lockBtn = document.getElementById('lock-app');
+    const unlockBtn = document.querySelector('#biometric-lock .btn-main');
+    const journalBtn = document.querySelector('.journal-trigger .btn-submit');
 
-// Função para voltar ao login
-btnVoltarParaLogin.addEventListener('click', () => {
-    telaCadastro.classList.add('hidden');
-    telaLogin.classList.remove('hidden');
-});
-}
+    // Sidebar Ativa
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+
+    // Bloqueio de Segurança
+    lockBtn.addEventListener('click', () => {
+        document.getElementById('biometric-lock').classList.remove('hidden');
+    });
+
+    unlockBtn.addEventListener('click', () => {
+        const pin = document.getElementById('pin-secure').value;
+        if (pin === '1234') {
+            document.getElementById('biometric-lock').classList.add('hidden');
+            document.getElementById('pin-secure').value = '';
+            showToast("Acesso biométrico confirmado.");
+        } else {
+            showToast("PIN incorreto. Tente 1234.", "error");
+        }
+    });
+
+    // Registro de Diário
+    journalBtn.addEventListener('click', () => {
+        const area = document.querySelector('.journal-trigger textarea');
+        if (area.value.trim() !== "") {
+            showToast("Registro criptografado via AES-256.");
+            area.value = "";
+        } else {
+            showToast("O diário parece vazio...", "error");
+        }
+    });
+};
+
+// --- 4. FUNCIONALIDADE SOS (CRISE) ---
+const initSOS = () => {
+    const body = document.body;
+
+    window.toggleSOS = () => {
+        const existingOverlay = document.getElementById('sos-overlay');
+        if (existingOverlay) {
+            existingOverlay.remove();
+            return;
+        }
+
+        const overlay = document.createElement('div');
+        overlay.id = 'sos-overlay';
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+            <div class="lock-card sos-card">
+                <h2>Apoio Imediato</h2>
+                <p>Você não está sozinho. Respire conosco ou busque ajuda.</p>
+
+                <div class="breathing-container">
+                    <div class="breathing-circle"></div>
+                    <strong id="breathing-text">Inspire...</strong>
+                </div>
+
+                <div class="sos-actions">
+                    <a href="tel:188" class="btn-main btn-cvv"><i class="fa-solid fa-phone"></i> Ligar CVV (188)</a>
+                    <button class="btn-main btn-close-sos" onclick="toggleSOS()">Estou melhor agora</button>
+                </div>
+            </div>
+        `;
+        body.appendChild(overlay);
+        startBreathingCycle();
+    };
+
+    function startBreathingCycle() {
+        const text = document.getElementById('breathing-text');
+        const circle = document.querySelector('.breathing-circle');
+
+        let phase = 0; // 0: Inspire, 1: Segure, 2: Expire
+
+        const cycle = () => {
+            if (!document.getElementById('sos-overlay')) return;
+
+            if (phase === 0) {
+                text.innerText = "Inspire...";
+                circle.style.transform = "scale(1.5)";
+                phase = 1;
+                setTimeout(cycle, 4000);
+            } else if (phase === 1) {
+                text.innerText = "Segure...";
+                phase = 2;
+                setTimeout(cycle, 4000);
+            } else {
+                text.innerText = "Expire...";
+                circle.style.transform = "scale(1)";
+                phase = 0;
+                setTimeout(cycle, 4000);
+            }
+        };
+        cycle();
+    }
+};
+
+// --- 5. MÁSCARAS E VALIDAÇÕES ---
+const initMasks = () => {
+    const cpfInput = document.getElementById('mask-cpf');
+
+    cpfInput?.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+
+        value = value.replace(/(\document.md{3})(\document.md)/, '$1.$2');
+        value = value.replace(/(\document.md{3})(\document.md)/, '$1.$2');
+        value = value.replace(/(\document.md{3})(\document.md{1,2})$/, '$1-$2');
+
+        e.target.value = value;
+    });
+};

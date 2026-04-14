@@ -9,6 +9,14 @@ const TABELA_CORPO = document.getElementById('tabela-historico');
 const FEEDBACK_IA = document.getElementById('ia-feedback');
 const BADGES_CONTAINER = document.getElementById('badges-container');
 
+// Objeto UI para facilitar o acesso
+const UI = {
+    botoesHumor: document.querySelectorAll('.btn-mood'),
+    barraProgresso: document.getElementById('progresso-xp'),
+    nivelTexto: document.getElementById('nivel-usuario'),
+    xpTexto: document.getElementById('xp-valor')
+};
+
 // --- 2. MOTOR DE INTELIGÊNCIA EMOCIONAL ---
 function processarAnalise(texto, humor) {
     const t = texto.toLowerCase();
@@ -29,86 +37,76 @@ function processarAnalise(texto, humor) {
         "Radiante": "Roube como um Artista (Austin Kleon)",
         "Bem": "O Homem em Busca de Sentido (Viktor Frankl)",
         "Neutro": "Minimalismo Digital (Cal Newport)",
-        "Triste": "A Morte é um Dia que Vale a Pena Viver (Ana Claudia)",
-        "Ansioso": "Ansiedade: Como enfrentar o mal do século (Augusto Cury)"
+        "Triste": "O Sol é Para Todos (Harper Lee)",
+        "Ansioso": "Talvez você deva conversar com alguém (Lori Gottlieb)"
     };
 
-    analise.livro = sugestoes[humor] || "Talvez Você Precise Conversar com Alguém";
+    if (sugestoes[humor]) {
+        analise.livro = sugestoes[humor];
+    }
+
     return analise;
 }
 
-// --- 3. SISTEMA DE GAMIFICAÇÃO (XP & STREAKS) ---
-async function atualizarProgressoUsuario(ganhoXP = 0) {
-    let user = JSON.parse(localStorage.getItem('user_genese'));
-    if (!user) return;
+// --- 3. GESTÃO DE HISTÓRICO (UI) ---
+async function carregarHistorico() {
+    if (!TABELA_CORPO) return;
 
-    // Atualiza XP e Nível
-    user.exp = (user.exp || 0) + ganhoXP;
-    
-    const niveis = [
-        { nome: "🌱 Semente", min: 0 },
-        { nome: "🌿 Broto", min: 20 },
-        { nome: "🌳 Árvore", min: 50 },
-        { nome: "✨ Mestre", min: 100 }
-    ];
+    try {
+        const relatos = await listarRelatos(); // Função do db.js
+        TABELA_CORPO.innerHTML = "";
 
-    const nivelAtual = [...niveis].reverse().find(n => user.exp >= n.min);
-    
-    // Atualiza Interface de Status
-    document.getElementById('user-level').innerText = nivelAtual.nome;
-    document.getElementById('streak-count').innerText = `🔥 ${user.streak || 0} dias`;
-    document.getElementById('user-display-name').innerText = user.nome.split(' ')[0];
-
-    // Lógica de Insígnias
-    const relatos = await listarRelatos();
-    let insignias = ["🐣 Recém-chegado"];
-    if (relatos.length >= 1) insignias.push("📝 Escritor");
-    if (user.exp >= 30) insignias.push("🛡️ Persistente");
-    if (user.streak >= 7) insignias.push("👑 Constância");
-
-    // Salva e Renderiza
-    localStorage.setItem('user_genese', JSON.stringify(user));
-    if (typeof salvarPerfilNoBanco === 'function') await salvarPerfilNoBanco(user);
-    
-    if (BADGES_CONTAINER) {
-        BADGES_CONTAINER.innerHTML = insignias.map(i => `<span class="badge">${i}</span>`).join('');
+        relatos.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.data}</td>
+                <td><span class="emoji-mood">${item.emoji}</span></td>
+                <td class="relato-texto">${item.relato.substring(0, 50)}${item.relato.length > 50 ? '...' : ''}</td>
+                <td>
+                    <button class="btn-action" onclick="deletarEntrada(${item.id})">🗑️</button>
+                </td>
+            `;
+            TABELA_CORPO.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Erro ao carregar histórico:", err);
     }
 }
 
-// --- 4. RENDERIZAÇÃO DO HISTÓRICO ---
-async function carregarHistorico() {
-    if (!TABELA_CORPO) return;
-    
-    const registros = await listarRelatos();
-    TABELA_CORPO.innerHTML = "";
+// --- 4. GAMIFICAÇÃO E PROGRESSO ---
+async function atualizarProgressoUsuario(ganhoXP) {
+    let perfil = await buscarPerfilPorEmail(state.user?.email || "default@user.com");
 
-    registros.forEach(reg => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${reg.data}</td>
-            <td style="font-size: 1.5rem">${reg.emoji}</td>
-            <td title="${reg.relato}">${reg.relato.substring(0, 25)}...</td>
-            <td>
-                <button class="btn-delete" onclick="deletarEntrada(${reg.id})">🗑️</button>
-            </td>
-        `;
-        TABELA_CORPO.appendChild(tr);
-    });
+    if (!perfil) {
+        perfil = { email: "default@user.com", xp: 0, nivel: 1 };
+    }
+
+    perfil.xp += ganhoXP;
+
+    // Lógica simples de nível (cada 100 XP sobe um nível)
+    perfil.nivel = Math.floor(perfil.xp / 100) + 1;
+    const progressoNoNivel = perfil.xp % 100;
+
+    // Salvar no Banco
+    await salvarPerfilNoBanco(perfil);
+
+    // Atualizar UI
+    if (UI.barraProgresso) UI.barraProgresso.style.width = `${progressoNoNivel}%`;
+    if (UI.nivelTexto) UI.nivelTexto.innerText = `Nível ${perfil.nivel}`;
+    if (UI.xpTexto) UI.xpTexto.innerText = `${perfil.xp} XP`;
 }
 
-// --- 5. EVENTO: SALVAR NOVO RELATO ---
+// --- 5. EVENTOS E SUBMISSÃO ---
 if (FORM_DIARIO) {
     FORM_DIARIO.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const relatoTexto = document.getElementById('relato-diario').value;
-        const pinDigitado = document.getElementById('pin-acesso').value;
-        const humor = UI.humorSelecionado || "Neutro";
-        const user = JSON.parse(localStorage.getItem('user_genese'));
+        const relatoTexto = document.getElementById('texto-diario').value;
+        const botaoAtivo = document.querySelector('.btn-mood.active');
+        const humor = botaoAtivo ? botaoAtivo.dataset.mood : "Neutro";
 
-        // Validação de Segurança
-        if (user && pinDigitado !== user.pin) {
-            alert("PIN Incorreto! Suas memórias estão protegidas.");
+        if (!relatoTexto.trim()) {
+            alert("Por favor, escreva como você se sente. Suas memórias estão protegidas.");
             return;
         }
 
@@ -117,42 +115,48 @@ if (FORM_DIARIO) {
 
         const novoRelato = {
             relato: relatoTexto,
-            emoji: emojisMap[humor],
+            emoji: emojisMap[humor] || "😐",
             data: new Date().toLocaleDateString('pt-BR'),
             analise: analise
         };
 
-        // Persistência
+        // Persistência no Banco de Dados (db.js)
         await salvarRelato(novoRelato);
         await atualizarProgressoUsuario(10); // Ganha 10 XP por desabafo
-        
-        // UI Feedback
-        document.getElementById('texto-analise').innerText = analise.mensagem;
-        document.getElementById('texto-livro').innerText = `📖 Sugestão: ${analise.livro}`;
-        FEEDBACK_IA.classList.remove('hidden');
 
-        // Reset
+        // UI Feedback da IA
+        if (FEEDBACK_IA) {
+            document.getElementById('texto-analise').innerText = analise.mensagem;
+            document.getElementById('texto-livro').innerText = `📖 Sugestão: ${analise.livro}`;
+            FEEDBACK_IA.classList.remove('hidden');
+        }
+
+        // Reset do Formulário
         FORM_DIARIO.reset();
         UI.botoesHumor.forEach(b => b.classList.remove('active'));
         carregarHistorico();
     });
 }
 
+// Seleção de Humor (Click nos Emojis)
+UI.botoesHumor.forEach(botao => {
+    botao.addEventListener('click', () => {
+        UI.botoesHumor.forEach(b => b.classList.remove('active'));
+        botao.classList.add('active');
+    });
+});
+
 // --- 6. FUNÇÕES GLOBAIS (WINDOW) ---
 window.deletarEntrada = async (id) => {
     if (confirm("Deseja apagar permanentemente este registro?")) {
-        await apagarRelato(id);
+        await apagarRelato(id); // Função do db.js
         carregarHistorico();
-        atualizarProgressoUsuario(0);
     }
 };
 
 // --- 7. INICIALIZAÇÃO ---
 window.addEventListener('load', () => {
-    // Garante que o dashboard atualize ao entrar
-    if (!document.getElementById('main-header').classList.contains('hidden')) {
-        atualizarProgressoUsuario(0);
-        carregarHistorico();
-    }
+    carregarHistorico();
+    atualizarProgressoUsuario(0); // Apenas para carregar a UI inicial
+    console.log("Controlador Mestre v9.0 iniciado e histórico sincronizado.");
 });
-

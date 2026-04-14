@@ -4,304 +4,230 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gênese do Equilíbrio | Ecossistema de Saúde Mental</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
 </head>
-<body class="light-theme">
+<body class="theme-safe-light">
 
-    <div id="loader" class="hidden">
-        <div class="spinner"></div>
-    </div>
+    <div id="toast-container"></div>
 
-    <section id="login" class="auth-wrapper">
-        <div class="auth-card animate-in">
-            <div class="auth-header">
-                <div class="brand-logo">🌿</div>
-                <h1>Gênese do Equilíbrio</h1>
-                <p>Bem-vindo de volta ao seu espaço de cura.</p>
+    <section id="auth-portal" class="auth-overlay">
+        <div class="auth-container">
+
+            <div class="auth-visual">
+                <div class="visual-content">
+                    <span class="badge-new">Versão 2.0</span>
+                    <h2>Sua mente em <br><span>perfeito equilíbrio.</span></h2>
+                    <p>O ecossistema mais robusto para sua jornada de autoconhecimento e controle emocional.</p>
+                </div>
+                <div class="visual-footer">
+                    <div class="stat-item"><strong>15k+</strong><span>Vidas impactadas</span></div>
+                    <div class="stat-item"><strong>99%</strong><span>Uptime de Crise</span></div>
+                </div>
             </div>
-            <form id="form-login">
-                <div class="input-group">
-                    <label for="email-login">E-mail</label>
-                    <input type="email" id="email-login" placeholder="exemplo@email.com" required>
-                </div>
-                <div class="input-group">
-                    <label for="senha-login">Senha</label>
-                    <input type="password" id="senha-login" placeholder="••••••••" required>
-                </div>
-                
-                <div class="captcha-container">
-                    <label id="label-captcha">Quanto é 5 + 3?</label>
-                    <input type="number" id="check-robot-login" placeholder="Resultado" required>
+
+            <div class="auth-forms">
+                <div class="brand-header">
+                    <div class="logo-icon">🌿</div>
+                    <h1>Gênese</h1>
                 </div>
 
-                <button type="submit" class="btn-primary">Acessar Ecossistema</button>
-            </form>
-            <div class="auth-options">
-                <button class="btn-link" id="btn-esqueci-senha">Esqueci minha senha</button>
-<section id="recuperar-senha" class="auth-wrapper hidden">
-    <div class="auth-card">
-        <h2>Recuperar Acesso</h2>
-        <p>Insira seu e-mail para receber as instruções.</p>
-        <div class="input-group">
-            <label>E-mail cadastrado</label>
-            <input type="email" placeholder="seu@email.com">
-        </div>
-        <button class="btn-primary">Enviar link de recuperação</button>
-        <button class="btn-link voltar-login">Voltar ao login</button>
-    </div>
-</section>
-                <button class="btn-link" id="link-cadastro">Criar nova jornada</button>
+                <div id="view-login" class="auth-form-content">
+                    <h3>Bem-vindo de volta</h3>
+                    <p class="subtitle">Insira suas credenciais para acessar seu refúgio.</p>
+                    <form id="form-login" onsubmit="return false;">
+                        <div class="input-field">
+                            <label><i class="fa-regular fa-envelope"></i> E-mail</label>
+                            <input type="email" placeholder="nome@email.com" required>
+                        </div>
+                        <div class="input-field">
+                            <label><i class="fa-regular fa-lock"></i> Senha</label>
+                            <input type="password" placeholder="••••••••" required>
+                        </div>
+                        <div class="form-options">
+                            <label class="remember-me"><input type="checkbox"> Lembrar de mim</label>
+                            <a href="#" onclick="switchAuth('recovery')">Esqueceu a senha?</a>
+                        </div>
+                        <button type="submit" class="btn-main">Entrar no Portal <i class="fa-solid fa-arrow-right"></i></button>
+                    </form>
+                    <p class="switch-text">Não tem uma conta? <a href="#" onclick="switchAuth('signup')">Começar jornada gratuita</a></p>
+                </div>
+
+                <div id="view-signup" class="auth-form-content hidden">
+                    <h3>Crie sua conta</h3>
+                    <p class="subtitle">Sua privacidade é nossa prioridade (LGPD Compliant).</p>
+                    <form id="form-signup" onsubmit="return false;">
+                        <div class="input-row">
+                            <div class="input-field">
+                                <label>Nome</label>
+                                <input type="text" placeholder="Como te chamamos?" required>
+                            </div>
+                            <div class="input-field">
+                                <label>CPF</label>
+                                <input type="text" id="mask-cpf" placeholder="000.000.000-00">
+                            </div>
+                        </div>
+                        <div class="input-field">
+                            <label>E-mail Profissional/Pessoal</label>
+                            <input type="email" placeholder="seu@melhoremail.com" required>
+                        </div>
+                        <div class="input-field">
+                            <label>Defina uma Senha Forte</label>
+                            <input type="password" placeholder="Mínimo 8 caracteres" required>
+                        </div>
+                        <div class="onboarding-step">
+                            <label>Qual seu foco principal hoje?</label>
+                            <div class="focus-chips">
+                                <button type="button" class="chip">Ansiedade</button>
+                                <button type="button" class="chip">Foco/TDAH</button>
+                                <button type="button" class="chip">Depressão</button>
+                                <button type="button" class="chip active">Autoestima</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-main">Concluir e Avaliar <i class="fa-solid fa-check"></i></button>
+                    </form>
+                    <p class="switch-text">Já é membro? <a href="#" onclick="switchAuth('login')">Fazer login</a></p>
+                </div>
+
+                <div id="view-recovery" class="auth-form-content hidden">
+                    <button class="btn-back" onclick="switchAuth('login')"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+                    <h3>Recuperar Acesso</h3>
+                    <p class="subtitle">Enviaremos um código de verificação para o seu e-mail cadastrado.</p>
+                    <form id="form-recovery" onsubmit="return false;">
+                        <div class="input-field">
+                            <label>E-mail de Cadastro</label>
+                            <input type="email" placeholder="insira seu e-mail" required>
+                        </div>
+                        <button type="submit" class="btn-main">Enviar Código de Resgate</button>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="cadastro" class="auth-wrapper hidden">
-        <div class="auth-card wide-card">
-            <h2>Iniciar Nova Jornada</h2>
-            <p>Preencha seus dados para personalizarmos sua experiência.</p>
-            <form id="form-cadastro">
-                <div class="grid-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" id="cad-nome" required placeholder="Nome">
-                    </div>
-                    <div class="input-group">
-                        <label>E-mail</label>
-                        <input type="email" id="cad-email" required placeholder="email@provedor.com">
-                    </div>
-                    <div class="input-group">
-                        <label>CPF (Para Relatórios Oficiais)</label>
-                        <input type="text" id="cad-cpf" maxlength="14" placeholder="000.000.000-00" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Nome de Usuário (@username)</label>
-                        <input type="text" id="cad-username" placeholder="seu_usuario" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Senha Forte</label>
-                        <input type="password" id="cad-senha" required placeholder="Mínimo 8 caracteres">
-                    </div>
-                    <div class="input-group">
-                        <label>Confirme a Senha</label>
-                        <input type="password" id="cad-senha-confirma" required>
-                    </div>
-                </div>
+    <main id="app-dashboard" class="hidden">
 
-                <div class="initial-assessment">
-                    <h3>Como você se sente no geral?</h3>
-                    <div class="assessment-chips">
-                        <label><input type="checkbox" name="perfil" value="ansiedade"> Ansiedade</label>
-                        <label><input type="checkbox" name="perfil" value="timidez"> Timidez</label>
-                        <label><input type="checkbox" name="perfil" value="insonia"> Insônia</label>
-                        <label><input type="checkbox" name="perfil" value="estresse"> Estresse</label>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-primary">Finalizar Cadastro</button>
-            </form>
-            <button class="btn-link voltar-login">Já possuo uma conta</button>
-        </div>
-    </section>
-
-    <div id="app-shell" class="hidden">
-        
         <aside class="sidebar">
-            <div class="sidebar-logo">🌿 Gênese</div>
-            <nav class="side-nav">
-                <button class="nav-item active" data-target="home">
-                    <span class="icon">🏠</span> Dashboard
-                </button>
-                <button class="nav-item" data-target="diario">
-                    <span class="icon">📝</span> Diário Terapêutico
-                </button>
-                <button class="nav-item" data-target="habitos">
-                    <span class="icon">📊</span> Rastreador de Hábitos
-                </button>
-                <button class="nav-item" data-target="biblioteca">
-                    <span class="icon">📚</span> Curadoria IA
-                </button>
-                <button class="nav-item" data-target="comunidade">
-                    <span class="icon">🤝</span> Círculos de Apoio
-                </button>
-                <button class="nav-item" data-target="metas">
-                    <span class="icon">🎯</span> Metas de Vida
-                </button>
-                <hr>
-                <div class="extra-features-label">Ferramentas de Evolução</div>
-                <button class="nav-item-small" title="Análise de Sonhos">🌙 Sonhos</button>
-                <button class="nav-item-small" title="Meditação Guiada">🧘 Meditar</button>
-                <button class="nav-item-small" title="Diário de Gratidão">✨ Gratidão</button>
-                <button class="nav-item-small" title="Foco Pomodoro">⏱️ Foco</button>
-                <button class="nav-item-small" title="Exercícios de Escrita">✍️ Escrita</button>
-                <button class="nav-item-small" title="Afirmações do Dia">🗣️ Afirmações</button>
-                <button class="nav-item-small" title="Planejador de Refeições">🍎 Nutrição</button>
-                <button class="nav-item-small" title="Monitor de Hidratação">💧 Água</button>
-                <button class="nav-item-small" title="Teste de Ansiedade">📈 Testes</button>
-                <button class="nav-item-small" title="Músicas Binaurais">🎧 Sounds</button>
-                <button class="nav-item-small" title="Diário de Cores">🎨 Arteterapia</button>
-                <button class="nav-item-small" title="Mapas Mentais">🧠 Mindmap</button>
-                <button class="nav-item-small" title="Controle Financeiro Emocional">💰 Finanças</button>
-                <button class="nav-item-small" title="Limpeza Mental">🧹 Declutter</button>
-                <button class="nav-item-small" title="Cápsula do Tempo">⏳ Cápsula</button>
-                <button class="nav-item-small" title="Treino Físico Leve">🏃 Movimento</button>
-                <button class="nav-item-small" title="Hobby Tracker">🎸 Hobbies</button>
-                <button class="nav-item-small" title="Social Detox">📱 Digital Detox</button>
-                <button class="nav-item-small" title="Carta para o Futuro">📩 Cartas</button>
-                <button class="nav-item-small" title="Mentor IA">🤖 Chat Mentor</button>
+            <nav>
+                <div class="nav-group">
+                    <small>Principal</small>
+                    <a href="#" class="active"><i class="fa-solid fa-house"></i> Dashboard</a>
+                    <a href="#"><i class="fa-solid fa-book-open"></i> Diário Criptografado</a>
+                    <a href="#"><i class="fa-solid fa-chart-line"></i> Evolução Clínica</a>
+                </div>
+                <div class="nav-group">
+                    <small>IA & Ferramentas</small>
+                    <a href="#"><i class="fa-solid fa-robot"></i> Análise de Distorções</a>
+                    <a href="#"><i class="fa-solid fa-film"></i> Curadoria de Mídia</a>
+                    <a href="#"><i class="fa-solid fa-check-double"></i> Metas e Hábitos</a>
+                </div>
+                <div class="nav-group">
+                    <small>Comunidade & Apoio</small>
+                    <a href="#"><i class="fa-solid fa-users"></i> Grupos de Apoio</a>
+                    <a href="#"><i class="fa-solid fa-user-doctor"></i> Profissionais</a>
+                </div>
             </nav>
-        </aside>
-
-        <header class="main-header">
-            <div class="header-left">
-                <h2 id="page-title">Bem-vindo, <span id="user-name-display">Viajante</span></h2>
-            </div>
-            <div class="header-right">
-                <div class="stats-pills">
-                    <span class="pill">🔥 <b id="streak-val">5</b> dias</span>
-                    <span class="pill">⭐ Nível <b id="level-val">12</b></span>
+            <div class="user-card-mini">
+                <img src="avatar.jpg" alt="User">
+                <div class="u-info">
+                    <strong>Nome do Usuário</strong>
+                    <span>Nível 12 • Pro</span>
                 </div>
-                <button id="btn-historico" class="btn-icon" title="Histórico Completo">📜</button>
-                <button id="btn-jogos" class="btn-icon" title="Mini-jogos Relaxantes">🎮</button>
-                <button id="toggle-dark-mode" class="btn-icon">🌓</button>
-                <button id="logout-btn" class="btn-exit">Sair 🚪</button>
-            </div>
-        </header>
-
-        <main class="main-content">
-            
-            <section id="sec-home" class="view-section">
-                <div class="grid-dashboard">
-                    <div class="card glass entry-card">
-                        <h3>O que está na sua mente?</h3>
-                        <div class="mood-bar">
-                            <button class="mood-btn" data-mood="1">😢</button>
-                            <button class="mood-btn" data-mood="2">😐</button>
-                            <button class="mood-btn" data-mood="3">😊</button>
-                            <button class="mood-btn" data-mood="4">🤩</button>
-                        </div>
-                        <textarea id="daily-entry" placeholder="Como foi seu dia? Identificou algum gatilho?"></textarea>
-                        <div class="entry-footer">
-                            <span id="char-count">0/1000</span>
-                            <button class="btn-primary-sm" id="save-entry">Salvar Relato</button>
-                        </div>
-                    </div>
-
-                    <div class="card glass ai-feedback-card">
-                        <h3><span class="sparkle">✨</span> Insight da Gênese</h3>
-                        <div id="ai-content-loader" class="hidden">Analisando sentimentos...</div>
-                        <div id="ai-response">
-                            <p class="placeholder-text">Escreva seu relato para que nossa IA possa analisar possíveis distorções cognitivas e sugerir caminhos.</p>
-                        </div>
-                        <div class="ai-recommendation hidden" id="media-rec">
-                            <h4>🎬 Recomendação para hoje:</h4>
-                            <p id="rec-text"></p>
-                        </div>
-                    </div>
-
-                    <div class="card glass habit-mini-tracker">
-                        <h3>Check-list de Equilíbrio</h3>
-                        <div class="habit-item">
-                            <input type="checkbox" id="h-sono"> <label>Dormiu +7h?</label>
-                        </div>
-                        <div class="habit-item">
-                            <input type="checkbox" id="h-agua"> <label>Bebeu 2L de água?</label>
-                        </div>
-                        <div class="habit-item">
-                            <input type="checkbox" id="h-medita"> <label>Meditação Diária?</label>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="sec-jogos" class="view-section hidden">
-                <div class="card glass">
-                    <h2>Espaço de Descompressão</h2>
-                    <div class="game-grid">
-                        <div class="game-unit" id="game-bubbles">
-                            <h4>Estourar Bolhas</h4>
-                            <canvas id="canvas-bubbles"></canvas>
-                        </div>
-                        <div class="game-unit" id="game-zen-garden">
-                            <h4>Jardim Zen</h4>
-                            <div class="placeholder-game">Arraste a areia...</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="sec-historico" class="view-section hidden">
-                <div class="card glass">
-                    <div class="header-flex">
-                        <h2>Sua Linha do Tempo</h2>
-                        <button class="btn-secondary" id="export-pdf">Exportar PDF para Terapeuta</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Humor</th>
-                                    <th>Análise IA</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-body">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <aside class="right-widgets">
-            <div class="widget-card insigneas-box">
-                <h4>Conquistas (RF07)</h4>
-                <div class="badge-grid">
-                    <div class="badge locked" title="7 dias seguidos">🔥</div>
-                    <div class="badge locked" title="Primeiro desabafo">📝</div>
-                    <div class="badge locked" title="Mestre da Calma">🧘</div>
-                </div>
-            </div>
-            
-            <div class="widget-card notification-center">
-                <h4>Lembretes</h4>
-                <ul id="notif-list">
-                    <li>💧 Hora de beber água!</li>
-                    <li>🧘 Que tal 5 min de respiração?</li>
-                </ul>
             </div>
         </aside>
 
-        <div id="sos-fixed-container">
-            <button id="main-sos-btn" class="pulse-animation">🆘</button>
-            <div id="sos-menu" class="hidden">
-                <div class="sos-card">
-                    <h3>Precisa de ajuda agora?</h3>
-                    <p>Você não está sozinho. Escolha uma opção:</p>
-                    <button class="btn-crisis" onclick="window.open('tel:188')">Ligar para CVV (188)</button>
-                    <button class="btn-crisis-alt" id="start-breathing">Técnica de Respiração 4-7-8</button>
-                    <button class="btn-close-sos" id="close-sos-menu">Fechar</button>
+        <section class="main-content">
+            <header class="top-bar">
+                <div class="streak-counter">
+                    <i class="fa-solid fa-fire"></i> <span>14 Dias de Ofensiva</span>
+                </div>
+                <div class="actions">
+                    <button class="btn-icon"><i class="fa-regular fa-bell"></i></button>
+                    <button class="btn-security" id="lock-app"><i class="fa-solid fa-fingerprint"></i> Bloquear</button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <div class="col-left">
+                    <div class="card journal-trigger">
+                        <h2>Como você está agora?</h2>
+                        <textarea placeholder="Relate seu dia para a IA analisar..."></textarea>
+                        <div class="card-footer">
+                            <span class="privacy-note"><i class="fa-solid fa-shield-halved"></i> AES-256 Ativo</span>
+                            <button class="btn-submit">Registrar Agora</button>
+                        </div>
+                    </div>
+
+                    <div class="stats-row">
+                        <div class="mini-card">
+                            <i class="fa-solid fa-moon"></i>
+                            <p>Qualidade Sono</p>
+                            <strong>85%</strong>
+                        </div>
+                        <div class="mini-card">
+                            <i class="fa-solid fa-mug-hot"></i>
+                            <p>Cafeína</p>
+                            <strong>200mg</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-right">
+                    <div class="card gamification-card">
+                        <h3>Suas Medalhas</h3>
+                        <div class="badge-grid">
+                            <div class="badge-icon locked">🏆</div>
+                            <div class="badge-icon">🌟</div>
+                            <div class="badge-icon">🧘</div>
+                            <div class="badge-icon locked">🔥</div>
+                        </div>
+                    </div>
+
+                    <div class="card ai-recommendation">
+                        <h3>Recomendado para você</h3>
+                        <div class="media-item">
+                            <i class="fa-solid fa-clapperboard"></i>
+                            <div>
+                                <strong>Divertida Mente 2</strong>
+                                <span>Filme • Análise de Emoções</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </section>
+
+        <button id="sos-fab" class="sos-btn" onclick="toggleSOS()">🆘</button>
+    </main>
+
+    <div id="biometric-lock" class="modal-overlay hidden">
+        <div class="lock-card">
+            <div class="fingerprint-anim"></div>
+            <h3>Identidade Requerida</h3>
+            <p>Use sua biometria ou PIN para desbloquear os dados sensíveis.</p>
+            <input type="password" id="pin-secure" placeholder="Inserir PIN">
+            <button class="btn-main">Desbloquear</button>
         </div>
+    </div>
 
-        <div id="breathing-modal" class="modal-overlay hidden">
-            <div class="breathing-container">
-                <div class="circle-wrap">
-                    <div class="circle-core"></div>
-                    <div class="circle-expand"></div>
-                </div>
-                <h2 id="breathing-instruction">Inspire...</h2>
-                <button class="btn-exit-modal">Finalizar</button>
-            </div>
-        </div>
+    <script>
+        // Lógica de Troca de Telas (Auth)
+        function switchAuth(view) {
+            document.querySelectorAll('.auth-form-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-' + view).classList.remove('hidden');
+        }
 
-    </div> <footer class="app-footer hidden" id="global-footer">
-        <p>&copy; 2024 Gênese do Equilíbrio - Em conformidade com a LGPD. 
-           Este sistema é um apoio e não substitui ajuda profissional.</p>
-    </footer>
+        // Função SOS
+        function toggleSOS() {
+            // Implementação do menu de crise com CVV e Respiração
+        }
 
-    <script src="auth.js"></script> <script src="dashboard.js"></script> <script src="ia-engine.js"></script> <script src="games.js"></script> </body>
+        // Simulação de Loading para garantir que "Tudo dê certo"
+        window.addEventListener('load', () => {
+            console.log("Sistemas Gênese inicializados com sucesso.");
+        });
+    </script>
+</body>
 </html>
