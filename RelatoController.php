@@ -1,30 +1,34 @@
 <?php
-// RelatoController.php
-class RelatoController {
-    private RelatoService $service;
+namespace App\Controllers;
+use App\Services\RelatoService;
+use App\Exceptions\BusinessRuleException;
+use App\Middleware\SanitizeMiddleware;
 
-    // Recebe a dependência
-    public function __construct(RelatoService $service) {
-        $this->service = $service;
+class RelatoController {
+    public function __construct(private RelatoService $service) {}
+
+    public function index(): void {
+        $relatos = $this->service->listar();
+        $erro = $_GET['erro'] ?? null;
+        $ok = isset($_GET['ok']);
+        require __DIR__ . '/../../views/index.php';
     }
 
-    public function store(array $requestData) {
+    public function store(): void {
+        $dados = SanitizeMiddleware::handlePost($_POST);
         try {
-            // Executa o serviço, zero if/else de regra de negócio aqui
-            $this->service->processarNovoRelato($requestData['texto'], $requestData['humor']);
-            
-            // Redireciona com sucesso
-            header("Location: /?sucesso=1");
-            exit;
-            
+            $this->service->registrar($dados);
+            header("Location: /?ok=1"); exit;
         } catch (BusinessRuleException $e) {
-            // Se a regra falhar, renderiza a view de erro
-            $erroMessage = $e->getMessage();
-            require 'view.php'; // Arquivo HTML de erro
-        } catch (Exception $e) {
-            // Erro de banco ou servidor capturado silenciosamente
-            $erroMessage = "Ocorreu um erro interno. Tente novamente mais tarde.";
-            require 'view.php';
+            header("Location: /?erro=" . urlencode($e->getMessage())); exit;
+        } catch (\Throwable $e) {
+            header("Location: /?erro=" . urlencode("Ocorreu um erro inesperado.")); exit;
         }
+    }
+
+    public function delete(): void {
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id > 0) $this->service->remover($id);
+        header("Location: /"); exit;
     }
 }

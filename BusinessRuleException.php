@@ -1,3 +1,3 @@
 <?php
-// BusinessRuleException.php
-class BusinessRuleException extends Exception {}
+namespace App\Exceptions;
+class BusinessRuleException extends \Exception {}
