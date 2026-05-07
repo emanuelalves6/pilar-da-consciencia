@@ -29,8 +29,21 @@ try {
 $uri    = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
+// Serve arquivos estáticos (css, js, fontes, imagens)
+$ext = pathinfo($uri, PATHINFO_EXTENSION);
+if (in_array($ext, ['css', 'js', 'png', 'jpg', 'ico', 'svg', 'woff', 'woff2', 'ttf'])) {
+    $file = __DIR__ . $uri;
+    if (file_exists($file)) {
+        return false;
+    }
+}
+
 try {
     switch (true) {
+        case $uri === '/' && $method === 'GET':
+            header('Content-Type: text/html; charset=utf-8');
+            readfile(__DIR__ . '/index.html');
+            break;
         case $uri === '/relatos' && $method === 'GET':
             $controller->index(); break;
         case $uri === '/relatos' && $method === 'POST':
