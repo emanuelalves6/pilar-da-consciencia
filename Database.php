@@ -1,25 +1,59 @@
 <?php
 namespace App\Config;
+
 use PDO;
+use RuntimeException;
 
 class Database {
     private static ?PDO $instance = null;
     private function __construct() {}
 
     public static function getInstance(): PDO {
-        if (self::$instance === null) {
-            $cfg = parse_ini_file(__DIR__ . '/config.ini');
-            $path = __DIR__ . '/' . $cfg['database'];
-            self::$instance = new PDO('sqlite:' . $path);
-            self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            self::$instance->exec("CREATE TABLE IF NOT EXISTS relatos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                humor TEXT NOT NULL,
-                relato TEXT NOT NULL,
-                data TEXT NOT NULL
-            )");
+        if (self::$instance !== null) {
+            return self::$instance;
         }
+
+        $configFile = __DIR__ . '/config.ini';
+
+        if (!file_exists($configFile)) {
+            throw new RuntimeException(
+                "Arquivo config.ini não encontrado em: {$configFile}. " .
+                "Crie-o a partir do config.ini.example e adicione ao .gitignore."
+            );
+        }
+
+        $cfg = parse_ini_file($configFile);
+
+        if ($cfg === false || empty($cfg['database'])) {
+            throw new RuntimeException(
+                "config.ini inválido ou sem a chave 'database'."
+            );
+        }
+
+        // Suporta caminho absoluto ou relativo ao diretório do config
+        $dbPath = $cfg['database'];
+        if (!str_starts_with($dbPath, '/')) {
+            $dbPath = __DIR__ . '/' . $dbPath;
+        }
+
+        self::$instance = new PDO('sqlite:' . $dbPath);
+        self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+        // Garante que a tabela exista sempre, independente do estado do banco
+        self::$instance->exec("CREATE TABLE IF NOT EXISTS relatos (
+            id      INTEGER PRIMARY KEY AUTOINCREMENT,
+            humor   TEXT NOT NULL,
+            relato  TEXT NOT NULL,
+            data    TEXT NOT NULL
+        )");
+
         return self::$instance;
     }
+
+    // Permite resetar a instância em testes
+    public static function reset(): void {
+        self::$instance = null;
+    }
 }
+
