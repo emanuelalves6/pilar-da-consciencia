@@ -1,4 +1,5 @@
 <?php
+// --- MANTIDO: Namespace para organização na pasta app/model/ ---
 namespace App\Models;
 
 class Relato {

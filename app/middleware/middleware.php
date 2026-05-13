@@ -1,5 +1,7 @@
 <?php
-// middleware.php
+// --- ALTERAÇÃO: Adicionado o namespace para o autoload funcionar ---
+namespace App\Middleware;
+
 class Middleware {
     public static function sanitizePost(): array {
         $cleanData = [];

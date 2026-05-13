@@ -13,7 +13,8 @@ class Database {
             return self::$instance;
         }
 
-        $configFile = __DIR__ . '/config.ini';
+        // ALTERAÇÃO AQUI: Usa a constante ROOT_PATH definida no config.php
+        $configFile = ROOT_PATH . 'config.ini';
 
         if (!file_exists($configFile)) {
             throw new RuntimeException(
@@ -30,17 +31,16 @@ class Database {
             );
         }
 
-        // Suporta caminho absoluto ou relativo ao diretório do config
         $dbPath = $cfg['database'];
         if (!str_starts_with($dbPath, '/')) {
-            $dbPath = __DIR__ . '/' . $dbPath;
+            // ALTERAÇÃO AQUI: O banco agora deve estar na pasta database/ na raiz
+            $dbPath = ROOT_PATH . 'database/' . $dbPath;
         }
 
         self::$instance = new PDO('sqlite:' . $dbPath);
         self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-        // Garante que a tabela exista sempre, independente do estado do banco
         self::$instance->exec("CREATE TABLE IF NOT EXISTS relatos (
             id      INTEGER PRIMARY KEY AUTOINCREMENT,
             humor   TEXT NOT NULL,
@@ -51,9 +51,7 @@ class Database {
         return self::$instance;
     }
 
-    // Permite resetar a instância em testes
     public static function reset(): void {
         self::$instance = null;
     }
 }
-
