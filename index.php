@@ -9,18 +9,14 @@ use App\Repositories\RelatoRepository;
 use App\Services\RelatoService;
 use App\Controllers\RelatoController;
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function respondJson(mixed $data, int $status = 200): never
-{
+function respondJson(mixed $data, int $status = 200): never {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// ── Bootstrap (DI manual) ─────────────────────────────────────────────────────
-
+// Bootstrap
 try {
     $pdo        = Database::getInstance();
     $repository = new RelatoRepository($pdo);
@@ -30,18 +26,23 @@ try {
     respondJson(['erro' => 'Erro ao iniciar a aplicação: ' . $e->getMessage()], 500);
 }
 
-// ── Roteamento ────────────────────────────────────────────────────────────────
-
 $uri    = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
-// Arquivos estáticos (css, js, imagens, fontes) — o PHP built-in server precisa
-// devolver false para o servidor servir o arquivo diretamente
+// Servir assets estáticos da pasta app/view (css, js, imagens)
 $ext = strtolower(pathinfo($uri, PATHINFO_EXTENSION));
-if (in_array($ext, ['css','js','png','jpg','jpeg','ico','svg','woff','woff2','ttf','map'], true)) {
-    $staticFile = __DIR__ . $uri;
-    if (file_exists($staticFile)) {
-        return false; // deixa o servidor built-in servir
+if (in_array($ext, ['css','js','png','jpg','jpeg','gif','ico','svg','woff','woff2','ttf','map'], true)) {
+    $asset = __DIR__ . '/app/view' . $uri;
+    if (file_exists($asset)) {
+        $mimes = [
+            'css'=>'text/css','js'=>'application/javascript','png'=>'image/png',
+            'jpg'=>'image/jpeg','jpeg'=>'image/jpeg','gif'=>'image/gif',
+            'ico'=>'image/x-icon','svg'=>'image/svg+xml','woff'=>'font/woff',
+            'woff2'=>'font/woff2','ttf'=>'font/ttf','map'=>'application/json',
+        ];
+        header('Content-Type: ' . ($mimes[$ext] ?? 'application/octet-stream'));
+        readfile($asset);
+        exit;
     }
     http_response_code(404);
     exit;
@@ -50,53 +51,44 @@ if (in_array($ext, ['css','js','png','jpg','jpeg','ico','svg','woff','woff2','tt
 try {
     switch (true) {
 
-        // ── GET /  →  serve qualquer .html encontrado na raiz ─────────────────
+        // GET / → renderiza a home via PHP (não depende do nome do arquivo HTML)
         case $uri === '/' && $method === 'GET':
             header('Content-Type: text/html; charset=utf-8');
 
-            // 1. Tenta nomes preferidos em ordem
-            $preferred = ['index.html', 'home.html', 'app.html', 'main.html'];
-            $htmlFile  = null;
-
-            foreach ($preferred as $name) {
-                if (file_exists(__DIR__ . '/' . $name)) {
-                    $htmlFile = __DIR__ . '/' . $name;
+            $candidatos = ['index.html', 'home.html', 'app.html', 'main.html'];
+            $htmlFile   = null;
+            foreach ($candidatos as $nome) {
+                if (file_exists(VIEW_PATH . $nome)) {
+                    $htmlFile = VIEW_PATH . $nome;
                     break;
                 }
             }
-
-            // 2. Fallback: qualquer .html na raiz (independente do nome)
-            if (!$htmlFile) {
-                $found = glob(__DIR__ . '/*.html');
-                if (!empty($found)) {
-                    $htmlFile = $found[0]; // pega o primeiro que encontrar
+            // Fallback: pega o primeiro .html dentro de app/view/
+            if ($htmlFile === null) {
+                foreach (glob(VIEW_PATH . '*.html') ?: [] as $f) {
+                    $htmlFile = $f;
+                    break;
                 }
             }
-
-            if ($htmlFile) {
-                readfile($htmlFile);
-            } else {
-                respondJson(['erro' => 'Nenhum arquivo HTML encontrado na raiz do projeto.'], 404);
+            if ($htmlFile === null) {
+                http_response_code(500);
+                echo "Nenhum arquivo .html encontrado em " . VIEW_PATH;
+                exit;
             }
-            break;
+            readfile($htmlFile);
+            exit;
 
-        // ── API de Relatos ─────────────────────────────────────────────────────
-        case $uri === '/relatos' && $method === 'GET':
-            $controller->index();
-            break;
-
+        // POST /relatos → cria
         case $uri === '/relatos' && $method === 'POST':
-            $controller->store();
-            break;
+            respondJson($controller->criar($_POST));
 
-        case $uri === '/relatos/delete' && $method === 'POST':
-            $controller->delete();
-            break;
+        // GET /relatos → lista
+        case $uri === '/relatos' && $method === 'GET':
+            respondJson($controller->listar());
 
-        // ── 404 ───────────────────────────────────────────────────────────────
         default:
-            respondJson(['erro' => "Rota não encontrada: [{$method}] {$uri}"], 404);
+            respondJson(['erro' => 'Rota não encontrada: ' . $method . ' ' . $uri], 404);
     }
 } catch (\Throwable $e) {
-    respondJson(['erro' => 'Erro inesperado no servidor.'], 500);
+    respondJson(['erro' => $e->getMessage()], 500);
 }
