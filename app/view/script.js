@@ -111,16 +111,33 @@ function initAuth() {
         });
     });
 
-    // Login
-    loginForm?.addEventListener('submit', e => {
+    // Login — valida contra o cadastro salvo no IndexedDB
+    loginForm?.addEventListener('submit', async e => {
         e.preventDefault();
         const btn = loginForm.querySelector('button[type="submit"]');
         const original = btn.innerHTML;
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Validando...';
 
-        const name = document.getElementById('login-email').value.split('@')[0] || 'Usuário';
-        storageSet('genese_user', { name: name, email: document.getElementById('login-email').value, loggedIn: true });
+        const email = document.getElementById('login-email').value.trim();
+        const senha = document.getElementById('login-password').value;
+
+        const cadastro = storageGet('genese_cadastro_' + email);
+        if (!cadastro) {
+            showToast('E-mail não cadastrado. Crie uma conta primeiro.', 'error');
+            btn.innerHTML = original;
+            btn.disabled = false;
+            return;
+        }
+        if (cadastro.password !== senha) {
+            showToast('Senha incorreta. Tente novamente.', 'error');
+            btn.innerHTML = original;
+            btn.disabled = false;
+            return;
+        }
+
+        // Salva sessão só na aba atual (some ao fechar)
+        sessionStorage.setItem('genese_session', JSON.stringify({ name: cadastro.name, email: cadastro.email }));
 
         setTimeout(() => {
             btn.innerHTML = original;
@@ -129,11 +146,11 @@ function initAuth() {
         }, 1200);
     });
 
-    // Cadastro
+    // Cadastro — só permite uma vez por email, salva no localStorage
     signupForm?.addEventListener('submit', e => {
         e.preventDefault();
-        const name = document.getElementById('signup-name').value || 'Usuário';
-        const email = document.getElementById('signup-email').value;
+        const name = document.getElementById('signup-name').value.trim() || 'Usuário';
+        const email = document.getElementById('signup-email').value.trim();
         const password = document.getElementById('signup-password').value;
 
         if (password.length < 8) {
@@ -141,8 +158,20 @@ function initAuth() {
             return;
         }
 
-        storageSet('genese_user', { name, email, loggedIn: true });
+        // Verifica se o email já está cadastrado
+        if (storageGet('genese_cadastro_' + email)) {
+            showToast('Este e-mail já possui uma conta. Faça login.', 'error');
+            switchAuth('login');
+            return;
+        }
+
+        // Salva cadastro permanentemente no localStorage
+        storageSet('genese_cadastro_' + email, { name, email, password });
         storageSet('genese_cofre_password', password);
+
+        // Inicia sessão
+        sessionStorage.setItem('genese_session', JSON.stringify({ name, email }));
+
         showToast(`Bem-vindo(a), ${name}! Sua jornada começa agora.`);
         setTimeout(() => enterDashboard(), 800);
     });
@@ -154,11 +183,7 @@ function initAuth() {
         setTimeout(() => switchAuth('login'), 2000);
     });
 
-    // Auto-login se já logado
-    const user = storageGet('genese_user');
-    if (user?.loggedIn) {
-        enterDashboard();
-    }
+    // NÃO faz auto-login — sempre exige login ao abrir o site
 }
 
 function switchAuth(view) {
@@ -180,7 +205,8 @@ function enterDashboard() {
     document.getElementById('app-dashboard')?.classList.remove('hidden');
     document.getElementById('app-footer')?.classList.remove('hidden');
 
-    const user = storageGet('genese_user', { name: 'Usuário' });
+    let user = { name: 'Usuário' };
+    try { user = JSON.parse(sessionStorage.getItem('genese_session')) || user; } catch {}
     const el = document.getElementById('sidebar-username');
     if (el) el.textContent = user.name;
 
